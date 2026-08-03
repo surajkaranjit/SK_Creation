@@ -587,90 +587,95 @@
             </div>
 
         </div>
-    </section>
-<section class="reels-row-section">
-  <h2 class="reels-title">Featured Shorts</h2>
-  
-  <div class="reels-row">
-    
-    <!-- Reel 1 -->
-    <div class="reel-item">
-      <div class="reel-video-wrapper">
-        <iframe 
-          src="https://www.youtube.com/embed/gLgS5T4Q7r0?loop=1&playlist=gLgS5T4Q7r0&controls=0&modestbranding=1" 
-          title="Short Reel 1" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-          allowfullscreen>
-        </iframe>
-        <a href="https://youtube.com/shorts/gLgS5T4Q7r0" target="_blank" class="reel-overlay" aria-label="Watch Reel 1">
-          <span class="watch-text">Watch ↗</span>
-        </a>
-      </div>
-      <div class="reel-info">
-        <h3>Behind the Scenes</h3>
-        <a href="https://youtube.com/shorts/gLgS5T4Q7r0" target="_blank" class="inline-link">Watch on YouTube ↗</a>
-      </div>
+    </section><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4 Vertical Videos Row</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0f172a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .video-grid {
+      display: grid;
+      /* Forces exactly 4 equal columns in a row */
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .video-card {
+      position: relative;
+      width: 100%;
+      /* Enforces 9:16 vertical ratio (1080 x 1920) */
+      aspect-ratio: 9 / 16; 
+      background-color: #1e293b;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .video-card video {
+      width: 100%;
+      height: 100%;
+      /* Cover fills the container seamlessly without distortion */
+      object-fit: cover; 
+    }
+  </style>
+</head>
+<body>
+
+  <div class="video-grid">
+    <!-- Video 1 -->
+    <div class="video-card">
+      <video controls preload="metadata">
+        <source src="video1.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
     </div>
 
-    <!-- Reel 2 -->
-    <div class="reel-item">
-      <div class="reel-video-wrapper">
-        <iframe 
-          src="https://www.youtube.com/embed/gLgS5T4Q7r0?loop=1&playlist=gLgS5T4Q7r0&controls=0&modestbranding=1" 
-          title="Short Reel 2" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-          allowfullscreen>
-        </iframe>
-        <a href="https://youtube.com/shorts/gLgS5T4Q7r0" target="_blank" class="reel-overlay" aria-label="Watch Reel 2">
-          <span class="watch-text">Watch ↗</span>
-        </a>
-      </div>
-      <div class="reel-info">
-        <h3>Product Showcase</h3>
-        <a href="https://youtube.com/shorts/gLgS5T4Q7r0" target="_blank" class="inline-link">Watch on YouTube ↗</a>
-      </div>
+    <!-- Video 2 -->
+    <div class="video-card">
+      <video controls preload="metadata">
+        <source src="video2.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
     </div>
 
-    <!-- Reel 3 -->
-    <div class="reel-item">
-      <div class="reel-video-wrapper">
-        <iframe 
-          src="https://www.youtube.com/embed/gLgS5T4Q7r0?loop=1&playlist=gLgS5T4Q7r0&controls=0&modestbranding=1" 
-          title="Short Reel 3" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-          allowfullscreen>
-        </iframe>
-        <a href="https://youtube.com/shorts/gLgS5T4Q7r0" target="_blank" class="reel-overlay" aria-label="Watch Reel 3">
-          <span class="watch-text">Watch ↗</span>
-        </a>
-      </div>
-      <div class="reel-info">
-        <h3>Quick Tips & Tricks</h3>
-        <a href="https://youtube.com/shorts/gLgS5T4Q7r0" target="_blank" class="inline-link">Watch on YouTube ↗</a>
-      </div>
+    <!-- Video 3 -->
+    <div class="video-card">
+      <video controls preload="metadata">
+        <source src="video3.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
     </div>
 
-    <!-- Reel 4 -->
-    <div class="reel-item">
-      <div class="reel-video-wrapper">
-        <iframe 
-          src="https://www.youtube.com/embed/gLgS5T4Q7r0?loop=1&playlist=gLgS5T4Q7r0&controls=0&modestbranding=1" 
-          title="Short Reel 4" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-          allowfullscreen>
-        </iframe>
-        <a href="https://youtube.com/shorts/gLgS5T4Q7r0" target="_blank" class="reel-overlay" aria-label="Watch Reel 4">
-          <span class="watch-text">Watch ↗</span>
-        </a>
-      </div>
-      <div class="reel-info">
-        <h3>Customer Review</h3>
-        <a href="https://youtube.com/shorts/gLgS5T4Q7r0" target="_blank" class="inline-link">Watch on YouTube ↗</a>
-      </div>
+    <!-- Video 4 -->
+    <div class="video-card">
+      <video controls preload="metadata">
+        <source src="video4.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
     </div>
-
   </div>
-</section>
+
+</body>
+</html>
 
     <!-- Photography Showcase Section -->
     <section id="photography">
