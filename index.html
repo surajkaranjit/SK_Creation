@@ -732,7 +732,59 @@
             </ul>
         </div>
     </section>
-       
+  <!-- Place this in the <head> of your HTML for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<!-- Social Links Container -->
+<div class="social-links">
+  <!-- WhatsApp -->
+  <a href="https://wa.me/1234567890" target="_blank" aria-label="WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+  
+  <!-- Instagram -->
+  <a href="https://instagram.com/yourhandle" target="_blank" aria-label="Instagram">
+    <i class="fa-brands fa-instagram"></i>
+  </a>
+  
+  <!-- Facebook -->
+  <a href="https://facebook.com/yourhandle" target="_blank" aria-label="Facebook">
+    <i class="fa-brands fa-facebook"></i>
+  </a>
+  
+  <!-- LinkedIn -->
+  <a href="https://linkedin.com/in/yourhandle" target="_blank" aria-label="LinkedIn">
+    <i class="fa-brands fa-linkedin"></i>
+  </a>
+  
+  <!-- TikTok -->
+  <a href="https://tiktok.com/@yourhandle" target="_blank" aria-label="TikTok">
+    <i class="fa-brands fa-tiktok"></i>
+  </a>
+</div>
+
+<style>
+  .social-links {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+  }
+  
+  .social-links a {
+    color: #333;
+    font-size: 24px;
+    text-decoration: none;
+    transition: color 0.3s ease, transform 0.2s ease;
+  }
+  
+  /* Brand colors on hover */
+  .social-links a:hover { transform: translateY(-3px); }
+  .social-links a:hover .fa-whatsapp { color: #25D366; }
+  .social-links a:hover .fa-instagram { color: #E4405F; }
+  .social-links a:hover .fa-facebook { color: #1877F2; }
+  .social-links a:hover .fa-linkedin { color: #0A66C2; }
+  .social-links a:hover .fa-tiktok { color: #000000; }
+</style>     
     <!-- Footer -->
     <footer>
         <p>&copy; 2026 SURAJ CREATION. All rights reserved.</p>
