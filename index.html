@@ -541,66 +541,198 @@
         <a href="#contact" class="btn">Let's Work Together</a>
     </section>
 
+<style>/* ==========================================================================
+   1. GLOBAL & DARK THEME SETUP
+   ========================================================================== */
+:root {
+  --bg-main: #0a0a0c;             /* Deep cinematic dark background */
+  --bg-card: rgba(255, 255, 255, 0.03); /* Translucent glass card background */
+  --border-card: rgba(255, 255, 255, 0.1);
+  --border-hover: rgba(255, 255, 255, 0.3);
+  
+  --text-primary: #f0f0f3;
+  --text-secondary: #a0a0ab;
+  --accent-gold: #e5b869;          /* High-end warm cinematic accent */
+  --accent-glow: rgba(229, 184, 105, 0.25);
+  
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --transition-fast: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
+body {
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
 
-    <!-- Video Portfolio Section -->
-    <section>
-        <h2 class="section-title">Featured Films & Edits</h2>
-        <div class="portfolio-grid">
-            
-            <!-- Video Item 1 -->
-            <div class="project-card">
-                <div class="thumbnail-wrapper">
-                    <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=800&auto=format&fit=crop" alt="Commercial Reel" class="thumbnail-img">
-                    <div class="play-overlay">
-                        <div class="play-icon">
-                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="project-info">
-                    <div class="project-category">Cinematography / Edit</div>
-                    <h3 class="project-title">Urban Explorer Brand Film</h3>
-                    <p class="project-desc">A high-energy commercial concept utilizing stylized framing rhythms and dynamic modern transitions.</p>
-                </div>
-            </div>
+/* ==========================================================================
+   2. TYPOGRAPHY & HEADINGS
+   ========================================================================== */
+h1, h2, h3 {
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  color: #ffffff;
+}
 
-            <!-- Video Item 2 -->
-<div class="project-card">
-    <div class="thumbnail-wrapper">
-        <!-- Direct link to watch on YouTube -->
-        <a href="https://www.youtube.com/watch?v=kX6_x1drl3o" target="_blank" rel="noopener noreferrer">
-            <iframe 
-                width="560" 
-                height="315" 
-                src="https://www.youtube.com/embed/kX6_x1drl3o?si=tjrGjI6X8uzoLzbP" 
-                title="YouTube video player" 
-                frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                referrerpolicy="strict-origin-when-cross-origin" 
-                allowfullscreen>
-            </iframe>
-            
-            <div class="play-overlay">
-                <div class="play-icon">
-                    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                </div>
-            </div>
-        </a>
+.section-title {
+  font-size: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: center;
+  margin-bottom: 2.5rem;
+  position: relative;
+}
+
+/* Accent Glow Bar Under Headings */
+.section-title::after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 2px;
+  background: var(--accent-gold);
+  margin: 0.8rem auto 0;
+  box-shadow: 0 0 10px var(--accent-gold);
+}
+
+/* ==========================================================================
+   3. RESPONSIVE VIDEO EMBEDS (16:9 Aspect Ratio)
+   ========================================================================== */
+.video-embed-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 ratio */
+  height: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--border-card);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+  background-color: #000;
+}
+
+.video-embed-container iframe,
+.video-embed-container video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ==========================================================================
+   4. WORK / FEATURED FILMS CARDS (Grid Layout)
+   ========================================================================== */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.portfolio-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 12px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.portfolio-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--border-hover);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6), 0 0 20px var(--accent-glow);
+}
+
+/* Thumbnail wrapper inside cards */
+.card-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.portfolio-card:hover .card-media img {
+  transform: scale(1.05); /* Smooth zoom effect on hover */
+}
+
+.card-content {
+  padding: 1.5rem;
+}
+
+.card-category {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--accent-gold);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  margin: 0 0 0.5rem 0;
+  color: #ffffff;
+}
+
+.card-description {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ==========================================================================
+   5. GLASSMORPHISM CONTAINER (For About / Experience / Contact)
+   ========================================================================== */
+.glass-container {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-card);
+  border-radius: 16px;
+  padding: 2.5rem;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}</style>
+ <!-- Example Section with Card Grid -->
+<section>
+  <h2 class="section-title">Featured Films</h2>
+  
+  <div class="cards-grid">
+    <div class="portfolio-card">
+      <div class="card-media">
+        <img src="your-thumbnail.jpg" alt="Film Project">
+      </div>
+      <div class="card-content">
+        <div class="card-category">Cinematography / Edit</div>
+        <h3 class="card-title">Commercial Concept</h3>
+        <p class="card-description">High-energy narrative edit with custom color pass and dynamic pacing.</p>
+      </div>
     </div>
-    
-    <div class="project-info">
-        <div class="project-category">Color Grading / Cut / Typography</div>
-        <h3 class="project-title">
-            <a href="https://www.youtube.com/watch?v=kX6_x1drl3o" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: inherit;">
-                Youtube Video 
-            </a>
-        </h3>
-        <p class="project-desc">A moody neo-noir shortform edit featuring slow tracking shots, high-contrast teal and blue color grading, and clean typographic accents..</p>
-    </div>
-</div>
-    </section>
+  </div>
+</section>
 
+<!-- Example Section with Video Embed -->
+<section style="max-width: 1000px; margin: 3rem auto; padding: 0 1.5rem;">
+  <h2 class="section-title">2026 Showreel</h2>
+  <div class="video-embed-container">
+    <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" allowfullscreen></iframe>
+  </div>
+</section>
+
+   
     <!-- Photography Showcase Section -->
     <section id="photography">
         <h2 class="section-title">Photography Portfolio</h2>
@@ -1090,13 +1222,7 @@
       <cite class="testimonial-author">— Producer, Ropani Sewa</cite>
     </blockquote>
 
-    <blockquote class="testimonial-card">
-      <p>"Exceeded our expectations on the commercial reel. The framing and motion pacing were top-tier."</p>
-      <cite class="testimonial-author">— Producer, Ropani Sewa</cite>
-    </blockquote>
-
-
-  </div>
+      </div>
 </section>
  
     <!-- Contact Section -->
