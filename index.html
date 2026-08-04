@@ -1016,40 +1016,82 @@
       font-style: normal;
       font-weight: 600;
       font-size: 1rem;
-    }
+    } 
+
+    /* Single Row Flexbox Layout */
+.testimonial-grid {
+  display: flex;
+  flex-direction: row;
+  justify-content: center; /* Center boxes on wider screens */
+  align-items: stretch;
+  gap: 1.5rem;             /* Space between each box */
+  overflow-x: auto;        /* Allows smooth side-scrolling on mobile/small screens */
+  padding-bottom: 1rem;    /* Space for scrollbar if present */
+}
+
+/* Ensure each card maintains a fixed width in the row */
+.testimonial-card {
+  flex: 0 0 300px;         /* Fixed width of 300px per card */
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.testimonial-card p {
+  color: #e0e0e0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  font-style: italic;
+  margin: 0 0 1rem 0;
+  text-align: left;
+}
+
+.testimonial-author {
+  display: block;
+  color: #ffd700;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-align: left;
+}
+    
   </style>
 </head></style>     
 <section class="testimonials-section">
   <h2 class="testimonials-title">What Clients Say</h2>
   
   <div class="testimonial-grid">
+    
     <blockquote class="testimonial-card">
       <p>"Suraj delivered high-quality cinematic visuals and handled color grading with incredible attention to detail."</p>
       <cite class="testimonial-author">— Creative Director, Local Brand</cite>
     </blockquote>
-  </div>
-</section>
-        
-         <section id="gear">
-  <h2 class="section-title">Kit &amp; Toolset</h2>
-  <div class="gear-grid">
-    <div class="gear-card">
-      <h4>Software</h4>
-      <p>DaVinci Resolve Studio, Adobe Premiere Pro, After Effects</p>
-    </div>
-    <div class="gear-card">
-      <h4>Camera &amp; Lenses</h4>
-      <p>Cinema Cameras, Prime Lenses, Anamorphic Glass</p>
-    </div>
-    <div class="gear-card">
-      <h4>Post-Production</h4>
-      <p>Color Grading Control Surfaces, Calibrated Displays, Sound Design</p>
-    </div>
-  </div>
-</section>
 
-</body>
-</html>
+    <blockquote class="testimonial-card">
+      <p>"Fast turnaround, professional setup, and high-end video edits. Suraj is our go-to cinematographer for brand campaigns."</p>
+      <cite class="testimonial-author">— Project Lead, Kathmandu Info Tech</cite>
+    </blockquote>
+
+    <blockquote class="testimonial-card">
+      <p>"Exceeded our expectations on the commercial reel. The framing and motion pacing were top-tier."</p>
+      <cite class="testimonial-author">— Producer, Ropani Sewa</cite>
+    </blockquote>
+
+  </div>
+</section>
  
     <!-- Contact Section -->
     <section id="contact" class="contact">
