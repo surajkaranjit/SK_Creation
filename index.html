@@ -651,7 +651,30 @@
       .videos-row-grid {
         grid-template-columns: 1fr; /* 1 per row on phones */
       }
-    }
+    } .glowing-title {
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  text-align: left; /* Aligns title to the left */
+  position: relative; /* Required for pseudo-element positioning */
+  padding-bottom: 12px; /* Leaves space for the blue line */
+}
+
+/* Blue Accent Line Under Title */
+.glowing-title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 45px; /* Length of the blue bar */
+  height: 4px; /* Thickness of the bar */
+  background-color: #00aaff; /* Bright blue color */
+  border-radius: 2px;
+  box-shadow: 0 0 10px #00aaff, 0 0 20px rgba(0, 170, 255, 0.6); /* Soft blue glow */
+}
   </style>
 </head>
 <body>
