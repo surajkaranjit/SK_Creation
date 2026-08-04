@@ -541,172 +541,52 @@
         <a href="#contact" class="btn">Let's Work Together</a>
     </section>
 
-<style>/* ==========================================================================
-   1. GLOBAL & DARK THEME SETUP
-   ========================================================================== */
-:root {
-  --bg-main: #0a0a0c;             /* Deep cinematic dark background */
-  --bg-card: rgba(255, 255, 255, 0.03); /* Translucent glass card background */
-  --border-card: rgba(255, 255, 255, 0.1);
-  --border-hover: rgba(255, 255, 255, 0.3);
-  
-  --text-primary: #f0f0f3;
-  --text-secondary: #a0a0ab;
-  --accent-gold: #e5b869;          /* High-end warm cinematic accent */
-  --accent-glow: rgba(229, 184, 105, 0.25);
-  
-  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --transition-fast: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-body {
-  background-color: var(--bg-main);
-  color: var(--text-primary);
-  font-family: var(--font-family);
-  margin: 0;
-  padding: 0;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* ==========================================================================
-   2. TYPOGRAPHY & HEADINGS
-   ========================================================================== */
-h1, h2, h3 {
-  letter-spacing: -0.02em;
-  font-weight: 700;
-  color: #ffffff;
-}
-
-.section-title {
-  font-size: 2rem;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  text-align: center;
-  margin-bottom: 2.5rem;
-  position: relative;
-}
-
-/* Accent Glow Bar Under Headings */
-.section-title::after {
-  content: '';
-  display: block;
-  width: 50px;
-  height: 2px;
-  background: var(--accent-gold);
-  margin: 0.8rem auto 0;
-  box-shadow: 0 0 10px var(--accent-gold);
-}
-
-/* ==========================================================================
-   3. RESPONSIVE VIDEO EMBEDS (16:9 Aspect Ratio)
-   ========================================================================== */
-.video-embed-container {
-  position: relative;
+<style>.reels-section-wrapper {
   width: 100%;
-  padding-bottom: 56.25%; /* 16:9 ratio */
+  max-width: 1400px;
+  margin: 3rem auto;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+/* Forces items into a single row */
+.reels-row {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important; /* Prevents wrapping to a new line */
+  gap: 15px !important;
+  width: 100% !important;
+  overflow-x: auto; /* Adds smooth horizontal scroll if screen is too narrow */
+}
+
+/* Forces each card to take up equal width in the row */
+.video-card-container {
+  flex: 1 1 0% !important;
+  min-width: 220px !important; /* Ensures videos don't shrink into tiny squares */
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+.video-embed {
+  position: relative;
+  padding-bottom: 56.25%; /* Keeps 16:9 widescreen ratio */
   height: 0;
   overflow: hidden;
-  border-radius: 12px;
-  border: 1px solid var(--border-card);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
-  background-color: #000;
+  border-radius: 6px;
 }
 
-.video-embed-container iframe,
-.video-embed-container video {
+.video-embed iframe {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   border: 0;
-}
-
-/* ==========================================================================
-   4. WORK / FEATURED FILMS CARDS (Grid Layout)
-   ========================================================================== */
-.cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
-.portfolio-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-card);
-  border-radius: 12px;
-  overflow: hidden;
-  backdrop-filter: blur(10px);
-  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
-}
-
-.portfolio-card:hover {
-  transform: translateY(-6px);
-  border-color: var(--border-hover);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6), 0 0 20px var(--accent-glow);
-}
-
-/* Thumbnail wrapper inside cards */
-.card-media {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-}
-
-.card-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s ease;
-}
-
-.portfolio-card:hover .card-media img {
-  transform: scale(1.05); /* Smooth zoom effect on hover */
-}
-
-.card-content {
-  padding: 1.5rem;
-}
-
-.card-category {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--accent-gold);
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.card-title {
-  font-size: 1.25rem;
-  margin: 0 0 0.5rem 0;
-  color: #ffffff;
-}
-
-.card-description {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  margin: 0;
-}
-
-/* ==========================================================================
-   5. GLASSMORPHISM CONTAINER (For About / Experience / Contact)
-   ========================================================================== */
-.glass-container {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--border-card);
-  border-radius: 16px;
-  padding: 2.5rem;
-  backdrop-filter: blur(12px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }</style>
- 
+
  <section class="reels-section-wrapper">
   <h2 class="glowing-title">2026 SHOWREELS</h2>
   
