@@ -663,48 +663,219 @@
         </div>
     </section>
   
-    <!-- Work Experience Section -->
-<section id="experience">
-    <h2>Work Experience</h2>
-    <div class="experience-container">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Work Experience Section</title>
+  <style>
+    /* Global Variables matching your dark theme */
+    :root {
+      --bg-dark: #0b131b;          /* Main page/section background */
+      --card-bg: #111c26;          /* Slightly elevated background for cards */
+      --card-hover-bg: #152230;    /* Interactive background color on hover */
+      --text-bright: #ffffff;      /* Headings and primary text */
+      --text-body: #a0aec0;        /* Readable body text */
+      --text-muted: #64748b;       /* Dates and metadata */
+      --accent-blue: #00a8ff;      /* Highlight and underline color */
+      --border-subtle: #1e293b;    /* Border separating elements */
+    }
 
-        <!-- Experience Item 1 -->
-        <div class="experience-card">
-            <div class="exp-content">
-                <div class="exp-header">
-        <h3>Senior Cinematographer & Editor</h3>
-          <span class="company-name">Ropani Sewa Pvt.Ltd</span>
-        <span class="exp-date">2026 - Present</span>
-       </div>
-      <p class="exp-description">
-    Led cinematic production and post-production workflows for commercials and music videos. 
-     Standardized color grading routines using DaVinci Resolve Studio.
-                </p>
-            </div>
-            <div class="exp-logo">
-                                                                               
-                <img src="Asset 1.png" alt="Company Logo">
-                
-            </div>
-        </div>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        <!-- Experience Item 2 -->
-        <div class="experience-card">
-            <div class="exp-content">
-                <div class="exp-header">
-                    <h3>Video Editor & Colorist</h3>
-                    <span class="company-name">Kathmandu Info Tech Pvt.Ltd</span>
-                    <span class="exp-date">2024 - 2025</span>
-                </div>
-                <p class="exp-description"> Edited high-turnaround brand films and promotional media using Premiere Pro and After Effects. 
-       Handled narrative pacing, sound design, and color polishing.
-                </p>
-            </div>
-            <div class="exp-logo">
-              <img src="KIT 1.png" alt="">
-            
-            </div>
-        </div>
+    body {
+      background-color: var(--bg-dark);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text-body);
+      line-height: 1.6;
+      padding: 40px 20px;
+    }
+
+    /* Main Container */
+    #experience {
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    /* Section Title Styling */
+    .section-title {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 45px;
+      height: 4px;
+      background-color: var(--accent-blue);
+      border-radius: 2px;
+      margin-top: 8px;
+    }
+
+    /* Experience List */
+    .experience-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Individual Card Layout */
+    .experience-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+      transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .experience-card:hover {
+      background-color: var(--card-hover-bg);
+      border-color: rgba(0, 168, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    /* Content Hierarchy */
+    .exp-content {
+      flex: 1;
+    }
+
+    .exp-header h3 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-bright);
+      margin-bottom: 6px;
+    }
+
+    .exp-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+      font-size: 0.95rem;
+    }
+
+    .company-name {
+      color: var(--accent-blue);
+      font-weight: 500;
+    }
+
+    .exp-date {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      background-color: rgba(255, 255, 255, 0.04);
+      padding: 2px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .exp-description {
+      color: var(--text-body);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Logo Container */
+    .exp-logo {
+      flex-shrink: 0;
+      width: 70px;
+      height: 70px;
+      background-color: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .exp-logo img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 640px) {
+      .experience-card {
+        flex-direction: column-reverse;
+        align-items: flex-start;
+        padding: 20px;
+      }
+
+      .exp-logo {
+        width: 50px;
+        height: 50px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Work Experience Section -->
+  <section id="experience">
+    <h2 class="section-title">Work Experience</h2>
+
+    <div class="experience-container">
+
+      <!-- Experience Item 1 -->
+      <article class="experience-card">
+        <div class="exp-content">
+          <header class="exp-header">
+            <h3>Senior Cinematographer &amp; Editor</h3>
+            <div class="exp-meta">
+              <span class="company-name">Ropani Sewa Pvt. Ltd.</span>
+              <span class="exp-date">2026 - Present</span>
+            </div>
+          </header>
+          <p class="exp-description">
+            Led cinematic production and post-production workflows for commercials and music videos. 
+            Standardized color grading routines using DaVinci Resolve Studio.
+          </p>
+        </div>
+        <div class="exp-logo">
+          <img src="Asset 1.png" alt="Ropani Sewa Logo">
+        </div>
+      </article>
+
+      <!-- Experience Item 2 -->
+      <article class="experience-card">
+        <div class="exp-content">
+          <header class="exp-header">
+            <h3>Video Editor &amp; Colorist</h3>
+            <div class="exp-meta">
+              <span class="company-name">Kathmandu Info Tech Pvt. Ltd.</span>
+              <span class="exp-date">2024 - 2025</span>
+            </div>
+          </header>
+          <p class="exp-description">
+            Edited high-turnaround brand films and promotional media using Premiere Pro and After Effects. 
+            Handled narrative pacing, sound design, and color polishing.
+          </p>
+        </div>
+        <div class="exp-logo">
+          <img src="KIT 1.png" alt="Kathmandu Info Tech Logo">
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+</body>
+</html>
 
     <!-- Contact Section -->
     <section id="contact" class="contact">
