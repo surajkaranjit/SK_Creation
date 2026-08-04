@@ -662,53 +662,202 @@
 
         </div>
     </section>
-  
      
+     <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Work Experience</title>
+  <style>
+    /* Dark theme variables matching your image */
+    :root {
+      --bg-dark: #070d14;          /* Main page/section background */
+      --card-bg: #0d1722;          /* Card background */
+      --card-border: #1a2a3a;      /* Soft blue-gray border */
+      --card-glow: rgba(0, 168, 255, 0.15); /* Outer glow effect */
+      --text-white: #ffffff;      /* Job titles & main header */
+      --text-blue: #00a8ff;       /* Accent blue for company name */
+      --text-gray: #8ca0b3;       /* Dates and description text */
+    }
 
-  <!-- Work Experience Section -->
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text-gray);
+      padding: 60px 20px;
+    }
+
+    /* Section Container */
+    #experience {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* Section Title */
+    .section-title {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--text-white);
+      margin-bottom: 28px;
+    }
+
+    /* Accent Line under Title */
+    .title-line {
+      width: 48px;
+      height: 4px;
+      background-color: var(--text-blue);
+      border-radius: 2px;
+      margin-top: -20px;
+      margin-bottom: 30px;
+    }
+
+    /* Experience Cards List */
+    .experience-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Individual Card Layout */
+    .experience-card {
+      position: relative;
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 28px 32px;
+      box-shadow: 0 0 15px var(--card-glow);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .experience-card:hover {
+      border-color: var(--text-blue);
+      box-shadow: 0 0 22px rgba(0, 168, 255, 0.3);
+    }
+
+    /* Top Row: Title on Left, Logo on Right */
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 6px;
+    }
+
+    .job-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-white);
+    }
+
+    /* Logo placement in top-right */
+    .exp-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .exp-logo img {
+      max-height: 28px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    /* Subtitle Row: Company Name | Date */
+    .exp-meta {
+      font-size: 1rem;
+      margin-bottom: 16px;
+    }
+
+    .company-name {
+      color: var(--text-blue);
+      font-weight: 500;
+    }
+
+    .divider {
+      color: var(--card-border);
+      margin: 0 6px;
+    }
+
+    .exp-date {
+      color: var(--text-gray);
+    }
+
+    /* Body Description */
+    .exp-description {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-gray);
+    }
+
+    /* Mobile View Styling */
+    @media (max-width: 600px) {
+      .experience-card {
+        padding: 20px;
+      }
+      .card-top {
+        flex-direction: column-reverse;
+        gap: 12px;
+      }
+      .job-title {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
   <section id="experience">
     <h2 class="section-title">Work Experience</h2>
+    <div class="title-line"></div>
 
     <div class="experience-container">
 
-      <!-- Item 1 -->
+      <!-- Card 1 -->
       <article class="experience-card">
-        <div class="exp-content">
-          <header class="exp-header">
-            <h3>Senior Cinematographer &amp; Editor</h3>
-            <div class="exp-meta">
-              <span class="company-name">Ropani Sewa Pvt. Ltd.</span>
-              <span class="exp-date">2026 - Present</span>
-            </div>
-          </header>
-          <p class="exp-description">
-            Led cinematic production and post-production workflows for commercials and music videos. 
-            Standardized color grading routines using DaVinci Resolve Studio.
-          </p>
+        <div class="card-top">
+          <h3 class="job-title">Senior Cinematographer &amp; Editor</h3>
+          <div class="exp-logo">
+            <img src="Asset 1.png" alt="Asset 1 Logo">
+          </div>
         </div>
-        <div class="exp-logo">
-          <img src="Asset 1.png" alt="Ropani Sewa Logo">
+        
+        <div class="exp-meta">
+          <span class="company-name">Ropani Sewa Pvt. Ltd.</span>
+          <span class="divider">|</span>
+          <span class="exp-date">2026 - Present</span>
         </div>
+
+        <p class="exp-description">
+          Led cinematic production and post-production workflows for commercials and music videos. 
+          Standardized color grading routines using DaVinci Resolve Studio.
+        </p>
       </article>
 
-      <!-- Item 2 -->
+      <!-- Card 2 -->
       <article class="experience-card">
-        <div class="exp-content">
-          <header class="exp-header">
-            <h3>Video Editor &amp; Colorist</h3>
-            <div class="exp-meta">
-              <span class="company-name">Kathmandu Info Tech Pvt. Ltd.</span>
-              <span class="exp-date">2024 - 2025</span>
-            </div>
-          </header>
-          <p class="exp-description">
-            Edited high-turnaround brand films and promotional media using Premiere Pro and After Effects. 
-            Handled narrative pacing, sound design, and color polishing.
-          </p>
+        <div class="card-top">
+          <h3 class="job-title">Video Editor &amp; Colorist</h3>
+          <div class="exp-logo">
+            <img src="KIT 1.png" alt="KIT 1 Logo">
+          </div>
         </div>
-        <div class="exp-logo">
-          <img src="KIT 1.png" alt="Kathmandu Info Tech Logo">
+
+        <div class="exp-meta">
+          <span class="company-name">Kathmandu Info Tech Pvt. Ltd.</span>
+          <span class="divider">|</span>
+          <span class="exp-date">2024 - 2025</span>
         </div>
+
+        <p class="exp-description">
+          Edited high-turnaround brand films and promotional media using Premiere Pro and After Effects. 
+          Handled narrative pacing, sound design, and color polishing.
+        </p>
       </article>
 
     </div>
@@ -716,7 +865,7 @@
 
 </body>
 </html>
-
+ 
     <!-- Contact Section -->
     <section id="contact" class="contact">
         <div class="contact-box">
