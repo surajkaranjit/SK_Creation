@@ -893,33 +893,30 @@ ut<!DOCTYPE html>
 </body>
 </html>
    
-<STYLE>/* Container Wrapper for Positioning Arrows */
-.gallery-container {
+<STYLE>.gallery-container {
     position: relative;
     width: 100%;
     padding: 10px 0;
 }
 
-/* Single Row Layout - Hide Native Scrollbar */
 .photo-gallery {
     display: flex;
     flex-wrap: nowrap;
     gap: 20px;
     overflow-x: auto;
     scroll-behavior: smooth;
-    scrollbar-width: none; /* Hide scrollbar for Firefox */
-    -ms-overflow-style: none; /* Hide scrollbar for IE/Edge */
-    padding: 10px 5px;
+    scrollbar-width: none; /* Hide scrollbar Firefox */
+    -ms-overflow-style: none; /* Hide scrollbar IE/Edge */
+    padding: 10px 0;
 }
 
 .photo-gallery::-webkit-scrollbar {
-    display: none; /* Hide scrollbar for Chrome / Safari */
+    display: none; /* Hide scrollbar Chrome/Safari */
 }
 
-/* Card Styling */
 .photo-item {
     position: relative;
-    flex: 0 0 320px; /* Fixed width per item */
+    flex: 0 0 320px;
     height: 420px;
     border-radius: 12px;
     overflow: hidden;
@@ -929,48 +926,39 @@ ut<!DOCTYPE html>
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.4s ease;
 }
 
-.photo-item:hover img {
-    transform: scale(1.05);
-}
-
-/* Side Arrow Buttons */
+/* Arrow Buttons */
 .gallery-btn {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    z-index: 10;
+    z-index: 10; /* Ensures buttons are clickable over the images */
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: rgba(0, 0, 0, 0.65);
+    background: rgba(0, 0, 0, 0.75);
     color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     font-size: 20px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.3s ease, transform 0.2s ease;
-    backdrop-filter: blur(4px);
 }
 
 .gallery-btn:hover {
-    background: rgba(0, 0, 0, 0.9);
-    transform: translateY(-50%) scale(1.08);
+    background: rgba(0, 0, 0, 0.95);
 }
 
 .btn-left {
-    left: -15px;
+    left: 10px;
 }
 
 .btn-right {
-    right: -15px;
+    right: 10px;
 }
 
-/* Text Overlay & Description Styling */
 .photo-overlay {
     position: absolute;
     bottom: 0;
@@ -979,9 +967,6 @@ ut<!DOCTYPE html>
     background: linear-gradient(transparent, rgba(0, 0, 0, 0.88));
     color: #ffffff;
     padding: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
 }
 
 .photo-sub {
@@ -989,35 +974,33 @@ ut<!DOCTYPE html>
     text-transform: uppercase;
     letter-spacing: 1px;
     opacity: 0.8;
-    margin-bottom: 4px;
 }
 
 .photo-caption {
     font-size: 1.2rem;
     font-weight: 600;
-    margin-bottom: 6px;
+    margin: 4px 0;
 }
 
 .photo-desc {
     font-size: 0.88rem;
     line-height: 1.4;
-    opacity: 0.9;
     margin: 0;
+    opacity: 0.9;
 }</STYLE>
     
-  <!-- Photography Showcase Section -->
+<!-- Photography Showcase Section -->
 <section id="photography">
     <h2 class="section-title">Photography Portfolio</h2>
     
     <div class="gallery-container">
-        <!-- Navigation Buttons -->
-        <button class="gallery-btn btn-left" id="prevBtn" aria-label="Scroll Left">&#10094;</button>
-        <button class="gallery-btn btn-right" id="nextBtn" aria-label="Scroll Right">&#10095;</button>
+        <!-- Arrow Buttons -->
+        <button type="button" class="gallery-btn btn-left" id="prevBtn" aria-label="Previous photo">&#10094;</button>
+        <button type="button" class="gallery-btn btn-right" id="nextBtn" aria-label="Next photo">&#10095;</button>
 
-        <!-- Photo Gallery Row -->
+        <!-- Gallery Track -->
         <div class="photo-gallery" id="photoGallery">
             
-            <!-- Photo 1 -->
             <div class="photo-item">
                 <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=600&auto=format&fit=crop" alt="Street Portrait">
                 <div class="photo-overlay">
@@ -1027,7 +1010,6 @@ ut<!DOCTYPE html>
                 </div>
             </div>
 
-            <!-- Photo 2 -->
             <div class="photo-item">
                 <img src="IMG_20260801_170830_360sss.jpg" alt="Landscape">
                 <div class="photo-overlay">
@@ -1037,7 +1019,6 @@ ut<!DOCTYPE html>
                 </div>
             </div>
 
-            <!-- Photo 3 -->
             <div class="photo-item">
                 <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=600&auto=format&fit=crop" alt="Fine Art">
                 <div class="photo-overlay">
@@ -1047,7 +1028,6 @@ ut<!DOCTYPE html>
                 </div>
             </div>
 
-            <!-- Photo 4 -->
             <div class="photo-item">
                 <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=600&auto=format&fit=crop" alt="Nature Stream">
                 <div class="photo-overlay">
@@ -1057,7 +1037,6 @@ ut<!DOCTYPE html>
                 </div>
             </div>
 
-            <!-- Photo 5 -->
             <div class="photo-item">
                 <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=600&auto=format&fit=crop" alt="Starry Sky">
                 <div class="photo-overlay">
@@ -1067,7 +1046,6 @@ ut<!DOCTYPE html>
                 </div>
             </div>
 
-            <!-- Photo 6 -->
             <div class="photo-item">
                 <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=600&auto=format&fit=crop" alt="Foggy Valley">
                 <div class="photo-overlay">
@@ -1081,35 +1059,24 @@ ut<!DOCTYPE html>
     </div>
 </section>
 
-    <!-- About Section with Suraj's Photo Space -->
-    <section id="about">
-        <div class="about-content">
-            
-            <!-- SURAJ'S PHOTO FRAME -->
-            <div class="about-img-frame">
-                <!-- SWAP THE URL IN src="..." WITH YOUR OWN PROFILE PICTURE FILE NAME (e.g., "suraj.jpg") -->
-                <img src="surajk.jpg.png" alt="Suraj Karanjit">
-            </div>
+<!-- Place JavaScript here so elements exist when code runs -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const gallery = document.getElementById('photoGallery');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
 
-            <div class="about-text">
-                <h2 class="section-title">Behind the Lens</h2>
-                <p>Hello! I am Suraj Karanjit, the creative energy behind SURAJ CREATION. Based in Kathmandu, my practice lives at the intersection of moving video, narrative continuity, and raw high-contrast photography.</p>
-                <p>By blending my technical background in video editing and cinematic color grading with a keen eye for still frames, I capture stories with deliberate structure. I focus heavily on sculpting shadow metrics, natural lighting balances, and emotional pacing blocks.</p>
-                
-                <h3 style="font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 15px; margin-top: 30px;">Core Expertise & Environments</h3>
-                <div class="skills-container">
-                    <span class="skill-tag">Cinematography</span>
-                    <span class="skill-tag">Commercial Video Editing</span>
-                    <span class="skill-tag">Digital Photography</span>
-                    <span class="skill-tag">DaVinci Resolve Studio</span>
-                    <span class="skill-tag">Premiere Pro & After Effects</span>
-                    <span class="skill-tag">Advanced Color Grading</span>
-                    <span class="skill-tag">Studio & Natural Lighting</span>
-                </div>
-            </div>
+        if (gallery && prevBtn && nextBtn) {
+            nextBtn.addEventListener('click', function() {
+                gallery.scrollBy({ left: 340, behavior: 'smooth' });
+            });
 
-        </div>
-    </section>
+            prevBtn.addEventListener('click', function() {
+                gallery.scrollBy({ left: -340, behavior: 'smooth' });
+            });
+        }
+    });
+</script>
 
     <style>/* Outer Section Setup */
 .gear-section-wrapper {
