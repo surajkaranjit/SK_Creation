@@ -386,22 +386,33 @@ ut<!DOCTYPE html>
             margin: 0 auto;
             transition: all 0.4s ease;
         }
+/* Base frame setup */
+.about-img-frame {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+}
 
-        .about-img-frame::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 12px;
-            padding: 2px;
-            background: linear-gradient(135deg, transparent, var(--accent-blue), transparent);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
+/* Gradient border pseudo-element */
+.about-img-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    padding: 2px;
+    background: linear-gradient(135deg, transparent, var(--accent-blue), transparent);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
             mask-composite: exclude;
-            pointer-events: none;
-            opacity: 0.6;
-            transition: opacity 0.4s ease;
-        }
+    pointer-events: none;
+    opacity: 0.6;
+    transition: opacity 0.4s ease;
+}
 
+/* Brighten the border on hover */
+.about-img-frame:hover::before {
+    opacity: 1;
+}
         .about-img-frame img {
             width: 100%;
             height: 100%;
