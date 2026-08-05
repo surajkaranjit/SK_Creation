@@ -893,40 +893,137 @@ ut<!DOCTYPE html>
 </body>
 </html>
    
-    <!-- Photography Showcase Section -->
-    <section id="photography">
-        <h2 class="section-title">Photography Portfolio</h2>
-        <div class="photo-gallery">
-            
-            <!-- Photo 1 -->
-            <div class="photo-item">
-                <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=600&auto=format&fit=crop" alt="Street Portrait">
-                <div class="photo-overlay">
-                    <div class="photo-sub">Portraiture</div>
-                    <div class="photo-caption">Kathmandu Heritage Shadows</div>
-                </div>
-            </div>
+<STYLE>/* Responsive Grid Layout */
+.photo-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    padding: 20px 0;
+}
 
-            <!-- Photo 2 -->
-            <div class="photo-item">
-                <img src="IMG_20260801_170830_360sss.jpg" alt="Landscape">
-                <div class="photo-overlay">
-                    <div class="photo-sub">Landscape / Cinematic</div>
-                    <div class="photo-caption">Himalayan Alpenglow Depths</div>
-                </div>
-            </div>
+/* Card Styling */
+.photo-item {
+    position: relative;
+    height: 400px;
+    border-radius: 12px;
+    overflow: hidden;
+}
 
-            <!-- Photo 3 -->
-            <div class="photo-item">
-                <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=600&auto=format&fit=crop" alt="Fine Art">
-                <div class="photo-overlay">
-                    <div class="photo-sub">Conceptual</div>
-                    <div class="photo-caption">Interplay of Light & Nature</div>
-                </div>
-            </div>
+.photo-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
 
+.photo-item:hover img {
+    transform: scale(1.05);
+}
+
+/* Text Overlay & Description Styling */
+.photo-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.88));
+    color: #ffffff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.photo-sub {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.8;
+    margin-bottom: 4px;
+}
+
+.photo-caption {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.photo-desc {
+    font-size: 0.88rem;
+    line-height: 1.4;
+    opacity: 0.9;
+    margin: 0;
+}</STYLE>
+    
+   <!-- Photography Showcase Section -->
+<section id="photography">
+    <h2 class="section-title">Photography Portfolio</h2>
+    
+    <div class="photo-gallery">
+        
+        <!-- Photo 1 -->
+        <div class="photo-item">
+            <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=600&auto=format&fit=crop" alt="Street Portrait">
+            <div class="photo-overlay">
+                <div class="photo-sub">Portraiture</div>
+                <div class="photo-caption">Kathmandu Heritage Shadows</div>
+                <p class="photo-desc">Capturing the subtle interplay of light, shadow, and traditional wood-carved architecture in Durbar Square.</p>
+            </div>
         </div>
-    </section>
+
+        <!-- Photo 2 -->
+        <div class="photo-item">
+            <img src="IMG_20260801_170830_360sss.jpg" alt="Landscape">
+            <div class="photo-overlay">
+                <div class="photo-sub">Landscape / Cinematic</div>
+                <div class="photo-caption">Himalayan Alpenglow Depths</div>
+                <p class="photo-desc">Golden hour light washing over snowy peaks, revealing rich textures and dramatic mountain contours.</p>
+            </div>
+        </div>
+
+        <!-- Photo 3 -->
+        <div class="photo-item">
+            <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=600&auto=format&fit=crop" alt="Fine Art">
+            <div class="photo-overlay">
+                <div class="photo-sub">Conceptual</div>
+                <div class="photo-caption">Interplay of Light & Nature</div>
+                <p class="photo-desc">An exploration of sunbeams filtering through dense forest canopies, highlighting nature's symmetry.</p>
+            </div>
+        </div>
+
+        <!-- Photo 4 -->
+        <div class="photo-item">
+            <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=600&auto=format&fit=crop" alt="Nature Stream">
+            <div class="photo-overlay">
+                <div class="photo-sub">Nature / Long Exposure</div>
+                <div class="photo-caption">Whispering Waters</div>
+                <p class="photo-desc">A long-exposure composition capturing the gentle flow of alpine streams over moss-covered stones.</p>
+            </div>
+        </div>
+
+        <!-- Photo 5 -->
+        <div class="photo-item">
+            <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=600&auto=format&fit=crop" alt="Starry Sky">
+            <div class="photo-overlay">
+                <div class="photo-sub">Astrophotography</div>
+                <div class="photo-caption">Cosmic Horizon</div>
+                <p class="photo-desc">Clear night skies over high mountain passes, revealing the vivid core of the Milky Way galaxy.</p>
+            </div>
+        </div>
+
+        <!-- Photo 6 -->
+        <div class="photo-item">
+            <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=600&auto=format&fit=crop" alt="Foggy Valley">
+            <div class="photo-overlay">
+                <div class="photo-sub">Atmospheric</div>
+                <div class="photo-caption">Valley of Mists</div>
+                <p class="photo-desc">Early morning fog settling over mountain ridges, creating a calm and ethereal landscape view.</p>
+            </div>
+        </div>
+
+    </div>
+</section> 
+
 
     <!-- About Section with Suraj's Photo Space -->
     <section id="about">
