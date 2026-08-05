@@ -530,14 +530,35 @@ ut<!DOCTYPE html>
 
 <style>/* Hero Container Setup */
 
+
+  
+/* Hero Container Setup */
 .hero {
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  align-items: center;    /* Horizontally center all child flex items */
+  justify-content: center; /* Vertically center content */
+  text-align: center;     /* Center text inside children */
   padding: 4rem 1rem 3rem 1rem;
-  
+  width: 100%;
+}
+
+/* Inner content wrapper centering */
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;    /* Center elements inside hero-content */
+  text-align: center;     /* Center h1, p, and inline text */
+  max-width: 800px;       /* Set optimal reading width */
+  margin: 0 auto;         /* Fallback margin centering */
+}
+
+/* Subheading paragraph adjustments */
+.hero-content p {
+  text-align: center;
+  margin: 1rem auto;
+  max-width: 600px;       /* Prevents text lines from stretching too wide */
 }
 
 /* Availability Badge */
