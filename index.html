@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ut<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -676,6 +676,7 @@
   box-shadow: 0 0 10px #00aaff, 0 0 20px rgba(0, 170, 255, 0.6); /* Soft blue glow */
 }
   </style>
+    
 </head>
 <body>
 
@@ -811,6 +812,147 @@
 
         </div>
     </section>
+
+    <style>/* Outer Section Setup */
+.gear-section-wrapper {
+  width: 100%;
+  max-width: 1400px;
+  margin: 4rem auto 2rem auto;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+/* 4-Column Grid for Gear Cards */
+.gear-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Glassmorphism Gear Box */
+.gear-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 1.8rem 1.2rem;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Hover Effect with Blue Glow */
+.gear-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(0, 170, 255, 0.5);
+  box-shadow: 0 0 20px rgba(0, 170, 255, 0.2);
+}
+
+/* Icon Container */
+.gear-icon {
+  color: #00aaff; /* Blue accent color matching the line */
+  background: rgba(0, 170, 255, 0.1);
+  padding: 12px;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 15px rgba(0, 170, 255, 0.15);
+}
+
+/* Category Title */
+.gear-category {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+}
+
+/* Detail Text */
+.gear-details {
+  font-size: 0.85rem;
+  color: #a0a0ab;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Responsive Grid for Tablets and Mobile */
+@media (max-width: 1024px) {
+  .gear-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .gear-grid {
+    grid-template-columns: 1fr;
+  }
+}</style>
+
+   <!-- OUR GEAR SECTION -->
+<section class="gear-section-wrapper">
+  <!-- Glowing Title with Blue Accent Line -->
+  <h2 class="glowing-title">Our Gear</h2>
+
+  <!-- Gear Cards Grid -->
+  <div class="gear-grid">
+    
+    <!-- Camera Body -->
+    <div class="gear-card">
+      <div class="gear-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
+          <circle cx="12" cy="13" r="3"/>
+        </svg>
+      </div>
+      <h3 class="gear-category">Camera Bodies</h3>
+      <p class="gear-details">Sony FX3 & A7S III (4K 120fps Cinema Line)</p>
+    </div>
+
+    <!-- Prime Lenses -->
+    <div class="gear-card">
+      <div class="gear-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <circle cx="12" cy="12" r="6"/>
+          <circle cx="12" cy="12" r="2"/>
+        </svg>
+      </div>
+      <h3 class="gear-category">Cinema Lenses</h3>
+      <p class="gear-details">Sigma Art Primes & Sony G-Master Zooms</p>
+    </div>
+
+    <!-- Stabilization / Gimbal -->
+    <div class="gear-card">
+      <div class="gear-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2v20"/>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+      </div>
+      <h3 class="gear-category">Gimbals & Rigs</h3>
+      <p class="gear-details">DJI RS3 Pro & Shoulder Rig Stabilization</p>
+    </div>
+
+    <!-- Lighting & Audio -->
+    <div class="gear-card">
+      <div class="gear-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7z"/>
+          <path d="M9 21h6"/>
+        </svg>
+      </div>
+      <h3 class="gear-category">Lighting & Audio</h3>
+      <p class="gear-details">Aputure COB Lights & Rode Wireless PRO Microphones</p>
+    </div>
+
+  </div>
+</section>
      
      <!DOCTYPE html>
 <html lang="en">
