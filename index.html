@@ -1297,72 +1297,120 @@ ut<!DOCTYPE html>
     </div>
   </section> 
            
-<style>/* Layout container for the logos */
-.brand-logos-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap; /* Allows wrap on smaller screens like mobile */
-  gap: 2.5rem;      /* Space between logos */
-  margin-top: 1.5rem;
+<style>/* Trusted Brands Container with Overflow Mask */
+.trusted-brands-section {
+    width: 100%;
+    overflow: hidden;
+    padding: 40px 0;
+    position: relative;
+    background: transparent;
 }
 
-/* Individual logo container alignment */
+/* Subtitle styling */
+.trusted-brands-title {
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+}
+
+/* Slider Track Window */
+.brand-slider-track {
+    display: flex;
+    width: max-content;
+    /* 20s animation speed — decrease number for faster sliding, increase for slower */
+    animation: autoSlide 20s linear infinite;
+}
+
+/* Pause animation on hover */
+.brand-slider-track:hover {
+    animation-play-state: paused;
+}
+
+/* Individual logo container */
 .brand-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 40px; /* Controls spacing between sliding items */
 }
 
 /* Ensure images scale consistently */
 .brand-item img {
-  max-height: 50px;  /* Adjust max height as needed */
-  width: auto;
-  object-fit: contain;
-  filter: grayscale(100%); /* Optional: gives a clean, uniform look */
-  opacity: 0.8;
-  transition: opacity 0.3s ease, filter 0.3s ease;
+    max-height: 45px;
+    width: auto;
+    object-fit: contain;
+    filter: grayscale(100%);
+    opacity: 0.7;
+    transition: opacity 0.3s ease, filter 0.3s ease;
 }
 
 .brand-item img:hover {
-  filter: grayscale(0%);
-  opacity: 100;
+    filter: grayscale(0%);
+    opacity: 1;
 }
 
 /* Styling for text-based brand names */
 .brand-item span {
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: #ccc;
-  white-space: nowrap;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+    transition: color 0.3s ease;
+}
+
+.brand-item span:hover {
+    color: #FFFFFF;
+}
+
+/* Continuous Infinite Loop Animation Keyframes */
+@keyframes autoSlide {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
 }</style>
      
         <section class="trusted-brands-section">
-  <div class="trusted-brands-container">
+ <section class="trusted-brands-section">
     <p class="trusted-brands-title">TRUSTED BY BRANDS & CREATORS</p>
     
-    <!-- Wrapper for the logos -->
-    <div class="brand-logos-row">
-      
-      <div class="brand-item">
-        <img alt="Ropani Sewa Logo" src="Asset 1.png">
-      </div>
+    <div class="brand-slider-track">
+        <!-- FIRST SET OF LOGOS -->
+        <div class="brand-item">
+            <img src="Asset 1.png" alt="Ropani Sewa Logo">
+        </div>
+        <div class="brand-item">
+            <img src="KIT 1.png" alt="Kathmandu Info Tech Logo">
+        </div>
+        <div class="brand-item">
+            <span>Suraj Creation Production</span>
+        </div>
+        <div class="brand-item">
+            <span>Commercial Media Lab</span>
+        </div>
 
-      <div class="brand-item">
-        <img alt="Kathmandu Info Tech Logo" src="KIT 1.png">
-      </div>
-
-      <div class="brand-item">
-        <span>Suraj Creation Production</span>
-      </div>
-
-      <div class="brand-item">
-        <span>Commercial Media Lab</span>
-      </div>
-
+        <!-- DUPLICATED SET (Required for infinite seamless loop) -->
+        <div class="brand-item">
+            <img src="Asset 1.png" alt="Ropani Sewa Logo">
+        </div>
+        <div class="brand-item">
+            <img src="KIT 1.png" alt="Kathmandu Info Tech Logo">
+        </div>
+        <div class="brand-item">
+            <span>Suraj Creation Production</span>
+        </div>
+        <div class="brand-item">
+            <span>Commercial Media Lab</span>
+        </div>
     </div>
-  </div>
+</section>
 
   <style>/* Testimonials Section */
 /* Make 'What Clients Say' title bolder and brighter */
