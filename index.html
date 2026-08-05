@@ -533,6 +533,12 @@ ut<!DOCTYPE html>
 
   
 /* Hero Container Setup */
+/* Keep Heading Text in a Single Line */
+.hero h1 {
+  text-align: center;
+  white-space: nowrap; /* Prevents text from breaking onto a second line */
+  font-size: clamp(1.8rem, 4vw, 3rem); /* Dynamically shrinks font on mobile to fit nicely */
+}
 .hero {
   position: relative;
   display: flex;
