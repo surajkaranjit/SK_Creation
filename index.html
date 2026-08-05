@@ -648,12 +648,24 @@ ut<!DOCTYPE html>
   background: rgba(0, 170, 255, 0.1);
 }
 
-/* Video Reel Frame Enhancements */
+/* Ensure the hero section allows full-width children */
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 4rem 0 3rem 0; /* Removed side padding so video can touch edges if needed */
+  width: 100%;
+}
+
+/* Full Cinematic Video Reel Frame */
 .reel-container {
   position: relative;
-  max-width: 1400px;
-  width: 95%;
-  border-radius: 20px;
+  width: 98vw;            /* Uses 98% of the browser window width */
+  max-width: 1800px;      /* Significantly higher cap for large monitors */
+  margin: 2rem auto 0 auto;
+  border-radius: 18px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 170, 255, 0.15);
@@ -661,9 +673,13 @@ ut<!DOCTYPE html>
 
 .reel-container video {
   display: block;
+  width: 100%;            /* Forces video to fill entire container width */
+  height: auto;           /* Keeps correct aspect ratio */
   border-radius: 18px;
+}
 
-}</style>
+
+</style>
 
 
 <section class="hero" id="work">
