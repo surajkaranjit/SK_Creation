@@ -951,39 +951,76 @@ ut<!DOCTYPE html>
 </html>
 
 
-<STYLE>.gallery-container {
+<style>:root {
+    --accent-blue: #00a8ff; /* Your custom blue color */
+}
+
+.gallery-container {
     position: relative;
     width: 100%;
-    padding: 10px 0;
+    padding: 30px 0; /* Increased vertical padding to allow space for the outer glow */
 }
 
 .photo-gallery {
     display: flex;
     flex-wrap: nowrap;
-    gap: 20px;
+    gap: 28px;
     overflow-x: auto;
     scroll-behavior: smooth;
     scrollbar-width: none; /* Hide scrollbar Firefox */
     -ms-overflow-style: none; /* Hide scrollbar IE/Edge */
-    padding: 10px 0;
+    padding: 20px 10px; /* Extra padding so glow isn't clipped by overflow */
 }
 
 .photo-gallery::-webkit-scrollbar {
     display: none; /* Hide scrollbar Chrome/Safari */
 }
 
+/* Individual Photo Item with Accent Blue Glow */
 .photo-item {
     position: relative;
     flex: 0 0 320px;
     height: 420px;
     border-radius: 12px;
-    overflow: hidden;
+    
+    /* 1. Subtle Accent Blue Box Shadow / Glow */
+    box-shadow: 0 0 25px rgba(0, 168, 255, 0.25),
+                0 0 50px rgba(0, 168, 255, 0.12);
+    
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
 
+/* 2. Soft Ambient Glow Behind Card (using ::before pseudo-element) */
+.photo-item::before {
+    content: '';
+    position: absolute;
+    inset: -10px; /* Expands glow beyond the card frame */
+    border-radius: 18px;
+    background: radial-gradient(circle at center, var(--accent-blue) 0%, transparent 70%);
+    opacity: 0.35;
+    z-index: -1;
+    filter: blur(15px);
+    transition: opacity 0.4s ease, filter 0.4s ease;
+}
+
+/* Hover Effect: Elevate Card and Boost Accent Blue Glow */
+.photo-item:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 0 35px rgba(0, 168, 255, 0.45),
+                0 0 70px rgba(0, 168, 255, 0.25);
+}
+
+.photo-item:hover::before {
+    opacity: 0.75;
+    filter: blur(20px);
+}
+
+/* Inner Image Container */
 .photo-item img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 12px;
 }
 
 /* Arrow Buttons */
@@ -991,22 +1028,27 @@ ut<!DOCTYPE html>
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    z-index: 10; /* Ensures buttons are clickable over the images */
+    z-index: 10;
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: rgba(31, 31, 31, 0.75);
+    background: rgba(13, 23, 34, 0.85); /* Matches dark portfolio theme */
     color: #ffffff;
-    border: 1px solid rgba(39, 49, 83, 0.706);
+    border: 1px solid rgba(0, 168, 255, 0.4);
     font-size: 20px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 0 15px rgba(0, 168, 255, 0.2);
+    transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .gallery-btn:hover {
-    background: rgba(0, 0, 0, 0.95);
+    background: rgba(0, 168, 255, 0.25);
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 20px rgba(0, 168, 255, 0.6);
 }
 
 .btn-left {
@@ -1017,21 +1059,25 @@ ut<!DOCTYPE html>
     right: 10px;
 }
 
+/* Overlay & Text Styles */
 .photo-overlay {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(transparent, rgba(0, 0, 0, 0.88));
+    background: linear-gradient(transparent, rgba(7, 13, 20, 0.95));
     color: #ffffff;
     padding: 20px;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
 }
 
 .photo-sub {
     font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 1px;
-    opacity: 0.8;
+    color: var(--accent-blue);
+    font-weight: 500;
 }
 
 .photo-caption {
@@ -1044,8 +1090,8 @@ ut<!DOCTYPE html>
     font-size: 0.88rem;
     line-height: 1.4;
     margin: 0;
-    opacity: 0.9;
-}</STYLE>
+    opacity: 0.85;
+}</style>
     
 <!-- Photography Showcase Section -->
 <section id="photography">
