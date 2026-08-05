@@ -13,15 +13,6 @@ ut<!DOCTYPE html>
             padding: 0;
         }
 
-         /* Smooth Scrolling */
-html {
-    scroll-behavior: smooth;
-}
-
-/* Offset for Fixed Header */
-section, [id] {
-    scroll-margin-top: 100px; /* Offset height matching your header */
-}
         :root {
             --bg-color: #0A0D14;
             --card-bg: #131824;
@@ -1047,6 +1038,11 @@ section, [id] {
     grid-template-columns: 1fr;
   }
 }</style>
+         
+         <section id="gear">
+    <h2>My Gear</h2>
+    <!-- Your gear content goes here -->
+</section> 
 
    <!-- OUR GEAR SECTION -->
 <section class="gear-section-wrapper">
@@ -1676,18 +1672,3 @@ section, [id] {
 </body>
 </html>
 
-<script>
-document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const targetId = this.getAttribute('href').substring(1);
-        const targetElement = document.getElementById(targetId);
-        
-        if (targetElement) {
-            targetElement.scrollIntoView({
-                behavior: 'smooth'
-            });
-        }
-    });
-});
-</script>
