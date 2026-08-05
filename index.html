@@ -893,18 +893,42 @@ ut<!DOCTYPE html>
 </body>
 </html>
    
-<STYLE>/* Responsive Grid Layout */
+<STYLE>/* Single Row Horizontal Scroll Container */
 .photo-gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 25px;
-    padding: 20px 0;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 20px;
+    overflow-x: auto;
+    padding: 20px 0 30px 0;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch; /* Smooth momentum scrolling on iOS */
+    scrollbar-width: thin; /* Slim scrollbar for Firefox */
 }
 
-/* Card Styling */
+/* Custom Scrollbar for Chrome / Safari / Edge */
+.photo-gallery::-webkit-scrollbar {
+    height: 8px;
+}
+
+.photo-gallery::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.photo-gallery::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+}
+
+.photo-gallery::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.45);
+}
+
+/* Card Styling - Fixed Width for Single Row Alignment */
 .photo-item {
     position: relative;
-    height: 400px;
+    flex: 0 0 320px; /* Ensures cards stay in a single row without shrinking */
+    height: 420px;
     border-radius: 12px;
     overflow: hidden;
 }
@@ -1022,8 +1046,7 @@ ut<!DOCTYPE html>
         </div>
 
     </div>
-</section> 
-
+</section>
 
     <!-- About Section with Suraj's Photo Space -->
     <section id="about">
