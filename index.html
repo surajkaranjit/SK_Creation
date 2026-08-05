@@ -1292,6 +1292,39 @@ ut<!DOCTYPE html>
   </div>
 </section>
      
+     <style>/* Updated Experience Container to Grid Layout */
+.experience-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 equal columns side-by-side */
+  gap: 24px;
+}
+
+/* Ensure full width container for multi-column layout */
+#experience {
+  max-width: 1200px; /* Increased from 900px to accommodate 2 columns */
+  margin: 0 auto;
+}
+
+/* Mobile & Tablet Responsiveness */
+@media (max-width: 850px) {
+  .experience-container {
+    grid-template-columns: 1fr; /* Collapse back to 1 column on smaller screens */
+  }
+
+  .experience-card {
+    padding: 20px;
+  }
+
+  .card-top {
+    flex-direction: column-reverse;
+    gap: 12px;
+  }
+
+  .job-title {
+    font-size: 1.2rem;
+  }
+}</style> 
+
      <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1299,15 +1332,14 @@ ut<!DOCTYPE html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Work Experience</title>
   <style>
-    /* Dark theme variables matching your image */
     :root {
-      --bg-dark: #070d14;          /* Main page/section background */
-      --card-bg: #0d1722;          /* Card background */
-      --card-border: #1a2a3a;      /* Soft blue-gray border */
-      --card-glow: rgba(0, 168, 255, 0.15); /* Outer glow effect */
-      --text-white: #ffffff;      /* Job titles & main header */
-      --text-blue: #00a8ff;       /* Accent blue for company name */
-      --text-gray: #8ca0b3;       /* Dates and description text */
+      --bg-dark: #070d14;
+      --card-bg: #0d1722;
+      --card-border: #1a2a3a;
+      --card-glow: rgba(0, 168, 255, 0.15);
+      --text-white: #ffffff;
+      --text-blue: #00a8ff;
+      --text-gray: #8ca0b3;
     }
 
     * {
@@ -1323,13 +1355,11 @@ ut<!DOCTYPE html>
       padding: 60px 20px;
     }
 
-    /* Section Container */
     #experience {
-      max-width: 900px;
+      max-width: 1200px;
       margin: 0 auto;
     }
 
-    /* Section Title */
     .section-title {
       font-size: 2.4rem;
       font-weight: 700;
@@ -1337,7 +1367,6 @@ ut<!DOCTYPE html>
       margin-bottom: 28px;
     }
 
-    /* Accent Line under Title */
     .title-line {
       width: 48px;
       height: 4px;
@@ -1347,14 +1376,13 @@ ut<!DOCTYPE html>
       margin-bottom: 30px;
     }
 
-    /* Experience Cards List */
+    /* Grid layout for 2-column display */
     .experience-container {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
     }
 
-    /* Individual Card Layout */
     .experience-card {
       position: relative;
       background-color: var(--card-bg);
@@ -1370,7 +1398,6 @@ ut<!DOCTYPE html>
       box-shadow: 0 0 22px rgba(0, 168, 255, 0.3);
     }
 
-    /* Top Row: Title on Left, Logo on Right */
     .card-top {
       display: flex;
       justify-content: space-between;
@@ -1384,7 +1411,6 @@ ut<!DOCTYPE html>
       color: var(--text-white);
     }
 
-    /* Logo placement in top-right */
     .exp-logo {
       display: flex;
       align-items: center;
@@ -1397,7 +1423,6 @@ ut<!DOCTYPE html>
       object-fit: contain;
     }
 
-    /* Subtitle Row: Company Name | Date */
     .exp-meta {
       font-size: 1rem;
       margin-bottom: 16px;
@@ -1417,15 +1442,17 @@ ut<!DOCTYPE html>
       color: var(--text-gray);
     }
 
-    /* Body Description */
     .exp-description {
       font-size: 1.05rem;
       line-height: 1.6;
       color: var(--text-gray);
     }
 
-    /* Mobile View Styling */
-    @media (max-width: 600px) {
+    /* Responsive adjustment for small screens */
+    @media (max-width: 850px) {
+      .experience-container {
+        grid-template-columns: 1fr;
+      }
       .experience-card {
         padding: 20px;
       }
@@ -1447,7 +1474,7 @@ ut<!DOCTYPE html>
 
     <div class="experience-container">
 
-      <!-- Card 1 -->
+      <!-- Column 1 / Left Item 1 -->
       <article class="experience-card">
         <div class="card-top">
           <h3 class="job-title">Senior Cinematographer &amp; Editor</h3>
@@ -1455,20 +1482,18 @@ ut<!DOCTYPE html>
             <img src="Asset 1.png" alt="Asset 1 Logo">
           </div>
         </div>
-        
         <div class="exp-meta">
           <span class="company-name">Ropani Sewa Pvt. Ltd.</span>
           <span class="divider">|</span>
           <span class="exp-date">2026 - Present</span>
         </div>
-
         <p class="exp-description">
           Led cinematic production and post-production workflows for commercials and music videos. 
           Standardized color grading routines using DaVinci Resolve Studio.
         </p>
       </article>
 
-      <!-- Card 2 -->
+      <!-- Column 2 / Right Item 1 -->
       <article class="experience-card">
         <div class="card-top">
           <h3 class="job-title">Video Editor &amp; Colorist</h3>
@@ -1476,21 +1501,58 @@ ut<!DOCTYPE html>
             <img src="KIT 1.png" alt="KIT 1 Logo">
           </div>
         </div>
-
         <div class="exp-meta">
           <span class="company-name">Kathmandu Info Tech Pvt. Ltd.</span>
           <span class="divider">|</span>
           <span class="exp-date">2024 - 2025</span>
         </div>
-
         <p class="exp-description">
           Edited high-turnaround brand films and promotional media using Premiere Pro and After Effects. 
           Handled narrative pacing, sound design, and color polishing.
         </p>
       </article>
 
+      <!-- Column 1 / Left Item 2 -->
+      <article class="experience-card">
+        <div class="card-top">
+          <h3 class="job-title">Motion Graphics Designer</h3>
+          <div class="exp-logo">
+            <img src="Asset 2.png" alt="Company Logo">
+          </div>
+        </div>
+        <div class="exp-meta">
+          <span class="company-name">Creative Media Studio</span>
+          <span class="divider">|</span>
+          <span class="exp-date">2023 - 2024</span>
+        </div>
+        <p class="exp-description">
+          Designed 2D/3D motion graphics, lower thirds, and animated logos for corporate promotional videos.
+        </p>
+      </article>
+
+      <!-- Column 2 / Right Item 2 -->
+      <article class="experience-card">
+        <div class="card-top">
+          <h3 class="job-title">Junior Video Editor</h3>
+          <div class="exp-logo">
+            <img src="Asset 3.png" alt="Company Logo">
+          </div>
+        </div>
+        <div class="exp-meta">
+          <span class="company-name">Digital Production House</span>
+          <span class="divider">|</span>
+          <span class="exp-date">2022 - 2023</span>
+        </div>
+        <p class="exp-description">
+          Assisted lead editors in sorting footage, multi-cam synchronization, and basic assembly cuts.
+        </p>
+      </article>
+
     </div>
-  </section> 
+  </section>
+
+</body>
+</html>
            
 <style>/* Trusted Brands Container with Overflow Mask */
 .trusted-brands-section {
