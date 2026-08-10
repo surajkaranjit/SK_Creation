@@ -1115,7 +1115,7 @@ ut<!DOCTYPE html>
             </div>
 
             <div class="photo-item">
-                <img src="IMG_20260801_170830_360sss.jpg" alt="Landscape">
+                <img src="public/IMG_20260801_170830_360sss.jpg" alt="Landscape">
                 <div class="photo-overlay">
                     <div class="photo-sub">Landscape / Cinematic</div>
                     <div class="photo-caption">Himalayan Alpenglow Depths</div>
@@ -1162,7 +1162,6 @@ ut<!DOCTYPE html>
         </div>
     </div>
 </section>
-
 <!-- Place JavaScript here so elements exist when code runs -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -2027,6 +2026,45 @@ ut<!DOCTYPE html>
     loadDynamicVideos();
     loadDynamicPhotos();
   });
+</script>
+
+<script>
+  const API_BASE = 'https://suraj-backend-jq7k.onrender.com';
+
+  async function loadDynamicPhotos() {
+    try {
+      const response = await fetch(`${API_BASE}/api/photos`);
+      const photos = await response.json();
+      
+      const gallery = document.getElementById('photoGallery');
+      if (!photos || photos.length === 0) return;
+
+      // Append backend photos to the existing gallery
+      photos.forEach(photo => {
+        const photoDiv = document.createElement('div');
+        photoDiv.className = 'photo-item';
+        
+        // Constructs full Render URL for uploaded images
+        const imageUrl = photo.image_url.startsWith('http') 
+          ? photo.image_url 
+          : `${API_BASE}/${photo.image_url}`;
+
+        photoDiv.innerHTML = `
+          <img src="${imageUrl}" alt="${photo.title || 'Portfolio Image'}">
+          <div class="photo-overlay">
+              <div class="photo-sub">${photo.category || 'Gallery'}</div>
+              <div class="photo-caption">${photo.title || ''}</div>
+              <p class="photo-desc">${photo.description || ''}</p>
+          </div>
+        `;
+        gallery.appendChild(photoDiv);
+      });
+    } catch (err) {
+      console.error('Error fetching dynamic photos:', err);
+    }
+  }
+
+  loadDynamicPhotos();
 </script>
 
 </body>
