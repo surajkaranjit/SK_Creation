@@ -697,19 +697,33 @@
         box-shadow: 0 0 10px #00aaff, 0 0 20px rgba(0, 170, 255, 0.6);
       }
 
-      .videos-row-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1.25rem;
+      .video-gallery-container {
+        position: relative;
         width: 100%;
-        box-sizing: border-box;
+        padding: 10px 0;
+      }
+
+      .videos-row-grid {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 24px;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        padding: 10px 5px;
+      }
+
+      .videos-row-grid::-webkit-scrollbar {
+        display: none;
       }
 
       .video-card-box {
+        flex: 0 0 380px;
         background: rgba(255, 255, 255, 0.04);
         border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 14px;
-        padding: 10px;
+        padding: 12px;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
         backdrop-filter: blur(10px);
         transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
@@ -748,21 +762,15 @@
       }
 
       .video-title {
-        font-size: 0.9rem;
+        font-size: 0.95rem;
         font-weight: 600;
         color: #e0e0e0;
         margin: 0;
       }
 
-      @media (max-width: 1024px) {
-        .videos-row-grid {
-          grid-template-columns: repeat(2, 1fr);
-        }
-      }
-
       @media (max-width: 600px) {
-        .videos-row-grid {
-          grid-template-columns: 1fr;
+        .video-card-box {
+          flex: 0 0 300px;
         }
       }
 
@@ -896,12 +904,13 @@
       }
     </style>
         
-    <section class="reels-section-wrapper">
+    <section class="reels-section-wrapper" id="featured-works">
       <h2 class="glowing-title">Featured Video Works</h2>
       
-      <!-- SLIDER WRAPPER WITH ARROWS -->
-      <div class="video-slider-wrapper">
-        <button class="slider-arrow prev-arrow" onclick="scrollVideos(-1)" aria-label="Previous Videos">&#10094;</button>
+      <!-- VIDEO SLIDER CONTAINER -->
+      <div class="video-gallery-container">
+        <button type="button" class="gallery-btn btn-left" id="videoPrevBtn" aria-label="Previous video">&#10094;</button>
+        <button type="button" class="gallery-btn btn-right" id="videoNextBtn" aria-label="Next video">&#10095;</button>
 
         <div class="videos-row-grid" id="videoGrid">
           
@@ -946,8 +955,6 @@
           </div>
 
         </div>
-
-        <button class="slider-arrow next-arrow" onclick="scrollVideos(1)" aria-label="Next Videos">&#10095;</button>
       </div>
     </section>
 
@@ -1635,7 +1642,7 @@
           const response = await fetch(`${API_BASE}/api/videos`);
           const videos = await response.json();
           
-          const videoGrid = document.querySelector('.videos-row-grid') || document.querySelector('.video-grid');
+          const videoGrid = document.getElementById('videoGrid');
           if (videoGrid && videos.length > 0) {
             videoGrid.innerHTML = videos.map(video => `
               <div class="video-card-box">
@@ -1644,7 +1651,6 @@
                 </div>
                 <div class="video-info">
                   <p class="video-title">${video.title}</p>
-                  <span class="video-category">${video.category}</span>
                 </div>
               </div>
             `).join('');
@@ -1659,7 +1665,7 @@
           const response = await fetch(`${API_BASE}/api/photos`);
           const photos = await response.json();
           
-          const gallery = document.getElementById('photoGallery') || document.querySelector('.photography-grid');
+          const gallery = document.getElementById('photoGallery');
           if (!gallery || !photos || photos.length === 0) return;
 
           gallery.innerHTML = '';
@@ -1691,29 +1697,36 @@
         loadDynamicVideos();
         loadDynamicPhotos();
 
-        const gallery = document.getElementById('photoGallery');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
+        // Photo Slider Controls
+        const photoGallery = document.getElementById('photoGallery');
+        const photoPrevBtn = document.getElementById('prevBtn');
+        const photoNextBtn = document.getElementById('nextBtn');
 
-        if (gallery && prevBtn && nextBtn) {
-            nextBtn.addEventListener('click', function() {
-                gallery.scrollBy({ left: 340, behavior: 'smooth' });
+        if (photoGallery && photoPrevBtn && photoNextBtn) {
+            photoNextBtn.addEventListener('click', function() {
+                photoGallery.scrollBy({ left: 340, behavior: 'smooth' });
             });
 
-            prevBtn.addEventListener('click', function() {
-                gallery.scrollBy({ left: -340, behavior: 'smooth' });
+            photoPrevBtn.addEventListener('click', function() {
+                photoGallery.scrollBy({ left: -340, behavior: 'smooth' });
+            });
+        }
+
+        // Video Slider Controls
+        const videoGrid = document.getElementById('videoGrid');
+        const videoPrevBtn = document.getElementById('videoPrevBtn');
+        const videoNextBtn = document.getElementById('videoNextBtn');
+
+        if (videoGrid && videoPrevBtn && videoNextBtn) {
+            videoNextBtn.addEventListener('click', function() {
+                videoGrid.scrollBy({ left: 400, behavior: 'smooth' });
+            });
+
+            videoPrevBtn.addEventListener('click', function() {
+                videoGrid.scrollBy({ left: -400, behavior: 'smooth' });
             });
         }
       });
-
-      function scrollVideos(direction) {
-        const grid = document.getElementById('videoGrid');
-        const scrollAmount = 320;
-        grid.scrollBy({
-          left: direction * scrollAmount,
-          behavior: 'smooth'
-        });
-      }
     </script>
 </body>
 </html>
