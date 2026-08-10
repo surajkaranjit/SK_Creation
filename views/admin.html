@@ -114,32 +114,47 @@
     </div>
 
     <script>
-        // -------------------------------------------------------------
-        // CHANGE THIS URL to your live hosted backend URL on Render!
-        // (e.g., 'https://your-app-name.onrender.com')
-        // -------------------------------------------------------------
-        const API_BASE = 'https://suraj-backend-jq7k.onrender.com';
+        const API_BASE = window.location.origin;
 
         let token = localStorage.getItem('jwtToken');
-        if(token) showDashboard();
+        if (token) showDashboard();
+
+        function authHeaders() {
+            return token ? { Authorization: `Bearer ${token}` } : {};
+        }
+
+        async function handleResponse(res) {
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) throw new Error(data.error || data.message || 'Request failed');
+            return data;
+        }
+
+        async function safeFetch(url, options = {}) {
+            const response = await fetch(url, options);
+            if (response.status === 401 || response.status === 403) {
+                logout();
+                throw new Error('Session expired. Please sign in again.');
+            }
+            return handleResponse(response);
+        }
 
         document.getElementById('loginForm').onsubmit = async (e) => {
             e.preventDefault();
-            const res = await fetch(`${API_BASE}/api/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    username: document.getElementById('username').value,
-                    password: document.getElementById('password').value
-                })
-            });
-            const data = await res.json();
-            if(data.token) {
+            try {
+                const res = await fetch(`${API_BASE}/api/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: document.getElementById('username').value,
+                        password: document.getElementById('password').value
+                    })
+                });
+                const data = await handleResponse(res);
                 token = data.token;
                 localStorage.setItem('jwtToken', token);
                 showDashboard();
-            } else {
-                alert(data.error || 'Login failed');
+            } catch (err) {
+                alert(err.message || 'Login failed');
             }
         };
 
@@ -153,6 +168,7 @@
 
         function logout() {
             localStorage.removeItem('jwtToken');
+            token = null;
             location.reload();
         }
 
@@ -165,82 +181,120 @@
 
         // --- VIDEOS LOGIC ---
         async function loadVideos() {
-            const res = await fetch(`${API_BASE}/api/videos`);
-            const data = await res.json();
-            document.querySelector('#videosTable tbody').innerHTML = data.map(v => `
-                <tr>
-                    <td>${v.title}</td>
-                    <td>${v.category}</td>
-                    <td><button onclick="deleteVideo(${v.id})" style="color:red; background:none; border:none; cursor:pointer;">Delete</button></td>
-                </tr>
-            `).join('');
+            try {
+                const data = await safeFetch(`${API_BASE}/api/videos`);
+                document.querySelector('#videosTable tbody').innerHTML = data.map(v => `
+                    <tr>
+                        <td>${v.title}</td>
+                        <td>${v.category}</td>
+                        <td><button onclick="deleteVideo(${v.id})" style="color:red; background:none; border:none; cursor:pointer;">Delete</button></td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Unable to load videos:', err);
+            }
         }
 
         document.getElementById('videoForm').onsubmit = async (e) => {
             e.preventDefault();
-            await fetch(`${API_BASE}/api/admin/videos`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify({
-                    title: document.getElementById('vTitle').value,
-                    youtube_url: document.getElementById('vUrl').value,
-                    category: document.getElementById('vCat').value
-                })
-            });
-            loadVideos();
+            try {
+                await safeFetch(`${API_BASE}/api/admin/videos`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+                    body: JSON.stringify({
+                        title: document.getElementById('vTitle').value,
+                        youtube_url: document.getElementById('vUrl').value,
+                        category: document.getElementById('vCat').value
+                    })
+                });
+                document.getElementById('vTitle').value = '';
+                document.getElementById('vUrl').value = '';
+                document.getElementById('vCat').value = '';
+                loadVideos();
+            } catch (err) {
+                alert(err.message || 'Could not save video');
+            }
         };
 
         async function deleteVideo(id) {
-            await fetch(`${API_BASE}/api/admin/videos/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
-            loadVideos();
+            try {
+                await safeFetch(`${API_BASE}/api/admin/videos/${id}`, {
+                    method: 'DELETE',
+                    headers: authHeaders()
+                });
+                loadVideos();
+            } catch (err) {
+                alert(err.message || 'Could not delete video');
+            }
         }
 
         // --- PHOTOS LOGIC ---
         async function loadPhotos() {
-            const res = await fetch(`${API_BASE}/api/photos`);
-            const data = await res.json();
-            document.querySelector('#photosTable tbody').innerHTML = data.map(p => `
-                <tr>
-                    <td>${p.caption}</td>
-                    <td>${p.category}</td>
-                    <td><button onclick="deletePhoto(${p.id})" style="color:red; background:none; border:none; cursor:pointer;">Delete</button></td>
-                </tr>
-            `).join('');
+            try {
+                const data = await safeFetch(`${API_BASE}/api/photos`);
+                document.querySelector('#photosTable tbody').innerHTML = data.map(p => `
+                    <tr>
+                        <td>${p.caption}</td>
+                        <td>${p.category}</td>
+                        <td><button onclick="deletePhoto(${p.id})" style="color:red; background:none; border:none; cursor:pointer;">Delete</button></td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Unable to load photos:', err);
+            }
         }
 
         document.getElementById('photoForm').onsubmit = async (e) => {
             e.preventDefault();
-            const formData = new FormData();
-            formData.append('caption', document.getElementById('pCaption').value);
-            formData.append('category', document.getElementById('pCat').value);
-            formData.append('description', document.getElementById('pDesc').value);
-            formData.append('image', document.getElementById('pImg').files[0]);
+            try {
+                const formData = new FormData();
+                formData.append('caption', document.getElementById('pCaption').value);
+                formData.append('category', document.getElementById('pCat').value);
+                formData.append('description', document.getElementById('pDesc').value);
+                formData.append('image', document.getElementById('pImg').files[0]);
 
-            await fetch(`${API_BASE}/api/admin/photos`, {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}` },
-                body: formData
-            });
-            loadPhotos();
+                await safeFetch(`${API_BASE}/api/admin/photos`, {
+                    method: 'POST',
+                    headers: authHeaders(),
+                    body: formData
+                });
+                document.getElementById('pCaption').value = '';
+                document.getElementById('pCat').value = '';
+                document.getElementById('pDesc').value = '';
+                document.getElementById('pImg').value = '';
+                loadPhotos();
+            } catch (err) {
+                alert(err.message || 'Could not upload photo');
+            }
         };
 
         async function deletePhoto(id) {
-            await fetch(`${API_BASE}/api/admin/photos/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
-            loadPhotos();
+            try {
+                await safeFetch(`${API_BASE}/api/admin/photos/${id}`, {
+                    method: 'DELETE',
+                    headers: authHeaders()
+                });
+                loadPhotos();
+            } catch (err) {
+                alert(err.message || 'Could not delete photo');
+            }
         }
 
         // --- INQUIRIES LOGIC ---
         async function loadInquiries() {
-            const res = await fetch(`${API_BASE}/api/admin/inquiries`, { headers: { 'Authorization': `Bearer ${token}` } });
-            const data = await res.json();
-            document.querySelector('#inquiriesTable tbody').innerHTML = data.map(i => `
-                <tr>
-                    <td>${i.name}</td>
-                    <td>${i.email}</td>
-                    <td>${i.phone}</td>
-                    <td>${i.message}</td>
-                </tr>
-            `).join('');
+            try {
+                const data = await safeFetch(`${API_BASE}/api/admin/inquiries`, { headers: authHeaders() });
+                document.querySelector('#inquiriesTable tbody').innerHTML = data.map(i => `
+                    <tr>
+                        <td>${i.name}</td>
+                        <td>${i.email}</td>
+                        <td>${i.phone}</td>
+                        <td>${i.message}</td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Unable to load inquiries:', err);
+            }
         }
     </script>
 </body>
