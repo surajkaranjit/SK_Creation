@@ -21,6 +21,7 @@
         .card { background: var(--panel-bg); border: 1px solid var(--border-color); padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; }
         input, textarea { width: 100%; background: #0A0D14; border: 1px solid var(--border-color); color: #fff; padding: 12px; margin: 8px 0 16px; border-radius: 6px; }
         .btn { width: 100%; background: var(--accent-blue); color: #000; font-weight: 700; padding: 12px; border: none; border-radius: 6px; cursor: pointer; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
         /* Dashboard Screen */
         .dash-container { display: none; }
@@ -34,8 +35,9 @@
         .section { display: none; }
         .section.active { display: block; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--border-color); }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
         th { color: var(--text-muted); }
+        .img-thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; }
     </style>
 </head>
 <body>
@@ -92,11 +94,11 @@
                             <input type="text" id="pCat" placeholder="Category" required>
                             <textarea id="pDesc" placeholder="Description"></textarea>
                             <input type="file" id="pImg" accept="image/*" required>
-                            <button type="submit" class="btn">Upload Photo</button>
+                            <button type="submit" id="photoSubmitBtn" class="btn">Upload Photo</button>
                         </form>
                     </div>
                     <table id="photosTable">
-                        <thead><tr><th>Caption</th><th>Category</th><th>Action</th></tr></thead>
+                        <thead><tr><th>Preview</th><th>Caption</th><th>Category</th><th>Action</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
@@ -145,7 +147,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        username: document.getElementById('username').value,
+                        username: document.getElementById('username').value.trim().toLowerCase(),
                         password: document.getElementById('password').value
                     })
                 });
@@ -232,13 +234,20 @@
         async function loadPhotos() {
             try {
                 const data = await safeFetch(`${API_BASE}/api/photos`);
-                document.querySelector('#photosTable tbody').innerHTML = data.map(p => `
-                    <tr>
-                        <td>${p.caption}</td>
-                        <td>${p.category}</td>
-                        <td><button onclick="deletePhoto(${p.id})" style="color:red; background:none; border:none; cursor:pointer;">Delete</button></td>
-                    </tr>
-                `).join('');
+                document.querySelector('#photosTable tbody').innerHTML = data.map(p => {
+                    let imagePath = p.image_url || p.image_path || p.filename || '';
+                    if (imagePath && !imagePath.startsWith('http')) {
+                        imagePath = `${API_BASE}/${imagePath.replace(/^\//, '')}`;
+                    }
+                    return `
+                        <tr>
+                            <td><img src="${imagePath}" class="img-thumb" alt="Preview" onerror="this.src='https://via.placeholder.com/60'"></td>
+                            <td>${p.caption || p.title || ''}</td>
+                            <td>${p.category || ''}</td>
+                            <td><button onclick="deletePhoto(${p.id})" style="color:red; background:none; border:none; cursor:pointer;">Delete</button></td>
+                        </tr>
+                    `;
+                }).join('');
             } catch (err) {
                 console.error('Unable to load photos:', err);
             }
@@ -246,6 +255,13 @@
 
         document.getElementById('photoForm').onsubmit = async (e) => {
             e.preventDefault();
+            const submitBtn = document.getElementById('photoSubmitBtn');
+            
+            // Prevent double-click submit
+            if (submitBtn.disabled) return;
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Uploading...';
+
             try {
                 const formData = new FormData();
                 formData.append('caption', document.getElementById('pCaption').value);
@@ -258,6 +274,7 @@
                     headers: authHeaders(),
                     body: formData
                 });
+
                 document.getElementById('pCaption').value = '';
                 document.getElementById('pCat').value = '';
                 document.getElementById('pDesc').value = '';
@@ -265,6 +282,9 @@
                 loadPhotos();
             } catch (err) {
                 alert(err.message || 'Could not upload photo');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Upload Photo';
             }
         };
 
