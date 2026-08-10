@@ -873,57 +873,44 @@ ut<!DOCTYPE html>
   box-shadow: 0 0 10px #00aaff, 0 0 20px rgba(0, 170, 255, 0.6); /* Soft blue glow */
 }
   </style>
-    
-</head>
-<body>
 
-  <section class="reels-section-wrapper">
-    <h2 class="glowing-title">Featured Video Works</h2>
+  <script></script>
     
-    <!-- 4 VIDEOS IN A ROW GRID -->
-    <div class="videos-row-grid">
+<section class="reels-section-wrapper">
+  <h2 class="glowing-title">Featured Video Works</h2>
+  
+  <!-- SLIDER WRAPPER WITH ARROWS -->
+  <div class="video-slider-wrapper">
+    <!-- Left Arrow Button -->
+    <button class="slider-arrow prev-arrow" onclick="scrollVideos(-1)" aria-label="Previous Videos">&#10094;</button>
+
+    <!-- 4 VIDEOS IN A ROW GRID / SLIDER -->
+    <div class="videos-row-grid" id="videoGrid">
       
-
-    
-<!-- Video Box 1 -->
+      <!-- Video Box 1 -->
       <div class="video-card-box">
         <div class="video-embed">
-          <iframe 
-              src="https://www.youtube.com/embed/DR52SlmZNXc"
-            allowfullscreen>
-          </iframe>
-        </div>
-        <div class="video-info">
-          <p class="video-title">Color Grade Pass</p>
-        </div>
-      </div>
- 
-
-
-    
-<!-- Video Box 2 -->
-      <div class="video-card-box">
-        <div class="video-embed">
-          <iframe 
-            src="https://www.youtube.com/embed/kX6_x1drl3o" 
-            title="Video 3" 
-            allowfullscreen>
-          </iframe>
+          <iframe src="https://www.youtube.com/embed/DR52SlmZNXc" allowfullscreen></iframe>
         </div>
         <div class="video-info">
           <p class="video-title">Color Grade Pass</p>
         </div>
       </div>
 
+      <!-- Video Box 2 -->
+      <div class="video-card-box">
+        <div class="video-embed">
+          <iframe src="https://www.youtube.com/embed/kX6_x1drl3o" title="Video 2" allowfullscreen></iframe>
+        </div>
+        <div class="video-info">
+          <p class="video-title">Color Grade Pass</p>
+        </div>
+      </div>
 
       <!-- Video Box 3 -->
       <div class="video-card-box">
         <div class="video-embed">
-          <iframe 
-            src="https://www.youtube.com/embed/kX6_x1drl3o" 
-            title="Video 3" 
-            allowfullscreen>
-          </iframe>
+          <iframe src="https://www.youtube.com/embed/kX6_x1drl3o" title="Video 3" allowfullscreen></iframe>
         </div>
         <div class="video-info">
           <p class="video-title">Color Grade Pass</p>
@@ -933,11 +920,7 @@ ut<!DOCTYPE html>
       <!-- Video Box 4 -->
       <div class="video-card-box">
         <div class="video-embed">
-          <iframe 
-            src="https://www.youtube.com/embed/kX6_x1drl3o" 
-            title="Video 4" 
-            allowfullscreen>
-          </iframe>
+          <iframe src="https://www.youtube.com/embed/kX6_x1drl3o" title="Video 4" allowfullscreen></iframe>
         </div>
         <div class="video-info">
           <p class="video-title">Brand Narrative</p>
@@ -945,17 +928,16 @@ ut<!DOCTYPE html>
       </div>
 
     </div>
-  </section>
 
-</body>
-</html>
+    <!-- Right Arrow Button -->
+    <button class="slider-arrow next-arrow" onclick="scrollVideos(1)" aria-label="Next Videos">&#10095;</button>
+  </div>
+</section>
 
+  <style>  --accent-blue: #00a8ff; /* Your custom blue color */
+ 
 
-<style>:root {
-    --accent-blue: #00a8ff; /* Your custom blue color */
-}
-
-.gallery-container {
+   .gallery-container {
     position: relative;
     width: 100%;
     padding: 30px 0; /* Increased vertical padding to allow space for the outer glow */
@@ -1995,6 +1977,17 @@ ut<!DOCTYPE html>
     loadDynamicVideos();
     loadDynamicPhotos();
   });
+</script>
+
+<script>
+  function scrollVideos(direction) {
+    const grid = document.getElementById('videoGrid');
+    const scrollAmount = 320; // Width of card + gap
+    grid.scrollBy({
+      left: direction * scrollAmount,
+      behavior: 'smooth'
+    });
+  }
 </script>
 
 </body>
