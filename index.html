@@ -1928,10 +1928,12 @@ ut<!DOCTYPE html>
     </footer>
 
     <script>
-  // Dynamically load videos from the database
+  const API_BASE = 'https://suraj-backend-jq7k.onrender.com';
+
+  // Load videos
   async function loadDynamicVideos() {
     try {
-      const response = await fetch('/api/videos');
+      const response = await fetch(`${API_BASE}/api/videos`);
       const videos = await response.json();
       
       const videoGrid = document.querySelector('.videos-row-grid') || document.querySelector('.video-grid');
@@ -1953,51 +1955,22 @@ ut<!DOCTYPE html>
     }
   }
 
-  // Dynamically load photos from the database
-  async function loadDynamicPhotos() {
-    try {
-      const response = await fetch('/api/photos');
-      const photos = await response.json();
-      
-      const photoGrid = document.querySelector('.photography-grid') || document.querySelector('.photo-slider');
-      if (photoGrid && photos.length > 0) {
-        photoGrid.innerHTML = photos.map(photo => `
-          <div class="photo-item">
-            <img src="${photo.image_url}" alt="${photo.caption}">
-            <div class="photo-caption">
-              <h4>${photo.caption}</h4>
-              <p>${photo.category}</p>
-            </div>
-          </div>
-        `).join('');
-      }
-    } catch (err) {
-      console.error('Error fetching photos:', err);
-    }
-  }
-
-  // Fetch content on page load
-  document.addEventListener('DOMContentLoaded', () => {
-    loadDynamicVideos();
-    loadDynamicPhotos();
-  });
-  
-  const API_BASE = 'https://suraj-backend-jq7k.onrender.com';
-
+  // Load photos (single function)
   async function loadDynamicPhotos() {
     try {
       const response = await fetch(`${API_BASE}/api/photos`);
       const photos = await response.json();
       
-      const gallery = document.getElementById('photoGallery');
-      if (!photos || photos.length === 0) return;
+      const gallery = document.getElementById('photoGallery') || document.querySelector('.photography-grid');
+      if (!gallery || !photos || photos.length === 0) return;
 
-      // Append backend photos to the existing gallery
+      // CLEAR existing images first so they don't duplicate
+      gallery.innerHTML = '';
+
       photos.forEach(photo => {
         const photoDiv = document.createElement('div');
         photoDiv.className = 'photo-item';
         
-        // Constructs full Render URL for uploaded images
         const imageUrl = photo.image_url.startsWith('http') 
           ? photo.image_url 
           : `${API_BASE}/${photo.image_url}`;
@@ -2013,11 +1986,15 @@ ut<!DOCTYPE html>
         gallery.appendChild(photoDiv);
       });
     } catch (err) {
-      console.error('Error fetching dynamic photos:', err);
+      console.error('Error fetching photos:', err);
     }
   }
 
-  loadDynamicPhotos();
+  // Execute ONCE on DOM load
+  document.addEventListener('DOMContentLoaded', () => {
+    loadDynamicVideos();
+    loadDynamicPhotos();
+  });
 </script>
 
 </body>
