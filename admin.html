@@ -18,15 +18,15 @@
         
         /* Login Screen */
         .login-wrap { display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .card { background: var(--panel-bg); border: 1px solid var(--border-color); padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; }
-        input, textarea { width: 100%; background: #0A0D14; border: 1px solid var(--border-color); color: #fff; padding: 12px; margin: 8px 0 16px; border-radius: 6px; }
+        .card { background: var(--panel-bg); border: 1px solid var(--border-color); padding: 30px; border-radius: 12px; width: 100%; max-width: 500px; margin-bottom: 20px; }
+        input, textarea, select { width: 100%; background: #0A0D14; border: 1px solid var(--border-color); color: #fff; padding: 12px; margin: 8px 0 16px; border-radius: 6px; }
         .btn { width: 100%; background: var(--accent-blue); color: #000; font-weight: 700; padding: 12px; border: none; border-radius: 6px; cursor: pointer; }
         .btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
         /* Dashboard Screen */
         .dash-container { display: none; }
         .dash-layout { display: flex; min-height: 100vh; }
-        .sidebar { width: 240px; background: var(--panel-bg); border-right: 1px solid var(--border-color); padding: 24px; }
+        .sidebar { width: 250px; background: var(--panel-bg); border-right: 1px solid var(--border-color); padding: 24px; }
         .brand { font-size: 1.2rem; font-weight: 800; margin-bottom: 30px; }
         .brand span { color: var(--accent-blue); }
         .menu-item { display: block; color: var(--text-muted); padding: 10px; margin-bottom: 5px; text-decoration: none; border-radius: 6px; cursor: pointer; }
@@ -38,6 +38,7 @@
         th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
         th { color: var(--text-muted); }
         .img-thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; }
+        .delete-btn { color: #ff4d4d; background: none; border: none; cursor: pointer; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -61,17 +62,34 @@
         <div class="dash-layout">
             <aside class="sidebar">
                 <div class="brand">SURAJ<span>ADMIN</span></div>
-                <a class="menu-item active" onclick="showTab('videosTab', this)">Videos</a>
+                <a class="menu-item active" onclick="showTab('bannerTab', this)">Banner Video</a>
+                <a class="menu-item" onclick="showTab('videosTab', this)">Videos</a>
                 <a class="menu-item" onclick="showTab('photosTab', this)">Photos</a>
+                <a class="menu-item" onclick="showTab('testimonialsTab', this)">Testimonials</a>
+                <a class="menu-item" onclick="showTab('experienceTab', this)">Work Experience</a>
+                <a class="menu-item" onclick="showTab('brandsTab', this)">Trusted Brands</a>
+                <a class="menu-item" onclick="showTab('gearsTab', this)">Our Gears</a>
                 <a class="menu-item" onclick="showTab('inquiriesTab', this)">Inquiries</a>
                 <a class="menu-item" onclick="logout()" style="color:#ff4d4d; margin-top: 30px;">Logout</a>
             </aside>
 
             <main class="main-content">
+                <!-- BANNER VIDEO SECTION -->
+                <div id="bannerTab" class="section active">
+                    <h2>Manage Banner Video</h2>
+                    <div class="card" style="margin-top: 20px;">
+                        <form id="bannerForm">
+                            <label>YouTube Embed URL or Direct Video Link</label>
+                            <input type="text" id="bannerUrl" placeholder="https://www.youtube.com/embed/..." required>
+                            <button type="submit" class="btn">Update Banner Video</button>
+                        </form>
+                    </div>
+                </div>
+
                 <!-- VIDEOS SECTION -->
-                <div id="videosTab" class="section active">
+                <div id="videosTab" class="section">
                     <h2>Manage Videos</h2>
-                    <div class="card" style="max-width: 500px; margin-top: 20px;">
+                    <div class="card" style="margin-top: 20px;">
                         <form id="videoForm">
                             <input type="text" id="vTitle" placeholder="Title (e.g. Color Grade Pass)" required>
                             <input type="text" id="vUrl" placeholder="YouTube Embed URL" required>
@@ -88,7 +106,7 @@
                 <!-- PHOTOS SECTION -->
                 <div id="photosTab" class="section">
                     <h2>Manage Photography</h2>
-                    <div class="card" style="max-width: 500px; margin-top: 20px;">
+                    <div class="card" style="margin-top: 20px;">
                         <form id="photoForm" enctype="multipart/form-data">
                             <input type="text" id="pCaption" placeholder="Caption" required>
                             <input type="text" id="pCat" placeholder="Category" required>
@@ -99,6 +117,74 @@
                     </div>
                     <table id="photosTable">
                         <thead><tr><th>Preview</th><th>Caption</th><th>Category</th><th>Action</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <!-- TESTIMONIALS SECTION -->
+                <div id="testimonialsTab" class="section">
+                    <h2>Manage Testimonials</h2>
+                    <div class="card" style="margin-top: 20px;">
+                        <form id="testimonialForm">
+                            <input type="text" id="tName" placeholder="Client Name" required>
+                            <input type="text" id="tRole" placeholder="Role/Company (e.g. CEO at Brand)" required>
+                            <textarea id="tFeedback" placeholder="Client Review/Feedback" required></textarea>
+                            <button type="submit" class="btn">Add Testimonial</button>
+                        </form>
+                    </div>
+                    <table id="testimonialsTable">
+                        <thead><tr><th>Name</th><th>Role</th><th>Feedback</th><th>Action</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <!-- WORK EXPERIENCE SECTION -->
+                <div id="experienceTab" class="section">
+                    <h2>Manage Work Experience</h2>
+                    <div class="card" style="margin-top: 20px;">
+                        <form id="experienceForm">
+                            <input type="text" id="expRole" placeholder="Role (e.g. Senior Video Editor)" required>
+                            <input type="text" id="expCompany" placeholder="Company/Project Name" required>
+                            <input type="text" id="expDuration" placeholder="Duration (e.g. 2021 - Present)" required>
+                            <textarea id="expDesc" placeholder="Brief Responsibilities"></textarea>
+                            <button type="submit" class="btn">Add Experience</button>
+                        </form>
+                    </div>
+                    <table id="experienceTable">
+                        <thead><tr><th>Role</th><th>Company</th><th>Duration</th><th>Action</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <!-- TRUSTED BRANDS SECTION -->
+                <div id="brandsTab" class="section">
+                    <h2>Trusted Brands</h2>
+                    <div class="card" style="margin-top: 20px;">
+                        <form id="brandForm" enctype="multipart/form-data">
+                            <input type="text" id="bName" placeholder="Brand Name" required>
+                            <input type="file" id="bLogo" accept="image/*" required>
+                            <button type="submit" class="btn">Add Brand Logo</button>
+                        </form>
+                    </div>
+                    <table id="brandsTable">
+                        <thead><tr><th>Logo</th><th>Brand Name</th><th>Action</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <!-- OUR GEARS SECTION -->
+                <div id="gearsTab" class="section">
+                    <h2>Our Gears</h2>
+                    <div class="card" style="margin-top: 20px;">
+                        <form id="gearForm">
+                            <input type="text" id="gName" placeholder="Gear Name (e.g. Sony A7IV)" required>
+                            <input type="text" id="gCat" placeholder="Category (e.g. Camera, Lens, Lighting)" required>
+                            <input type="text" id="gSpecs" placeholder="Short Specs / Description">
+                            <button type="submit" class="btn">Add Gear</button>
+                        </form>
+                    </div>
+                    <table id="gearsTable">
+                        <thead><tr><th>Gear Name</th><th>Category</th><th>Specs</th><th>Action</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
@@ -163,8 +249,13 @@
         function showDashboard() {
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('dashScreen').style.display = 'block';
+            loadBannerVideo();
             loadVideos();
             loadPhotos();
+            loadTestimonials();
+            loadExperience();
+            loadBrands();
+            loadGears();
             loadInquiries();
         }
 
@@ -181,6 +272,32 @@
             el.classList.add('active');
         }
 
+        // --- BANNER VIDEO LOGIC ---
+        async function loadBannerVideo() {
+            try {
+                const data = await safeFetch(`${API_BASE}/api/banner`);
+                if (data && data.url) {
+                    document.getElementById('bannerUrl').value = data.url;
+                }
+            } catch (err) {
+                console.error('Unable to load banner video:', err);
+            }
+        }
+
+        document.getElementById('bannerForm').onsubmit = async (e) => {
+            e.preventDefault();
+            try {
+                await safeFetch(`${API_BASE}/api/admin/banner`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+                    body: JSON.stringify({ url: document.getElementById('bannerUrl').value })
+                });
+                alert('Banner video updated successfully');
+            } catch (err) {
+                alert(err.message || 'Could not save banner video');
+            }
+        };
+
         // --- VIDEOS LOGIC ---
         async function loadVideos() {
             try {
@@ -189,7 +306,7 @@
                     <tr>
                         <td>${v.title}</td>
                         <td>${v.category}</td>
-                        <td><button onclick="deleteVideo(${v.id})" style="color:red; background:none; border:none; cursor:pointer;">Delete</button></td>
+                        <td><button onclick="deleteVideo(${v.id})" class="delete-btn">Delete</button></td>
                     </tr>
                 `).join('');
             } catch (err) {
@@ -244,7 +361,7 @@
                             <td><img src="${imagePath}" class="img-thumb" alt="Preview" onerror="this.src='https://via.placeholder.com/60'"></td>
                             <td>${p.caption || p.title || ''}</td>
                             <td>${p.category || ''}</td>
-                            <td><button onclick="deletePhoto(${p.id})" style="color:red; background:none; border:none; cursor:pointer;">Delete</button></td>
+                            <td><button onclick="deletePhoto(${p.id})" class="delete-btn">Delete</button></td>
                         </tr>
                     `;
                 }).join('');
@@ -256,8 +373,6 @@
         document.getElementById('photoForm').onsubmit = async (e) => {
             e.preventDefault();
             const submitBtn = document.getElementById('photoSubmitBtn');
-            
-            // Prevent double-click submit
             if (submitBtn.disabled) return;
             submitBtn.disabled = true;
             submitBtn.innerText = 'Uploading...';
@@ -297,6 +412,212 @@
                 loadPhotos();
             } catch (err) {
                 alert(err.message || 'Could not delete photo');
+            }
+        }
+
+        // --- TESTIMONIALS LOGIC ---
+        async function loadTestimonials() {
+            try {
+                const data = await safeFetch(`${API_BASE}/api/testimonials`);
+                document.querySelector('#testimonialsTable tbody').innerHTML = data.map(t => `
+                    <tr>
+                        <td>${t.name}</td>
+                        <td>${t.role}</td>
+                        <td>${t.feedback}</td>
+                        <td><button onclick="deleteTestimonial(${t.id})" class="delete-btn">Delete</button></td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Unable to load testimonials:', err);
+            }
+        }
+
+        document.getElementById('testimonialForm').onsubmit = async (e) => {
+            e.preventDefault();
+            try {
+                await safeFetch(`${API_BASE}/api/admin/testimonials`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+                    body: JSON.stringify({
+                        name: document.getElementById('tName').value,
+                        role: document.getElementById('tRole').value,
+                        feedback: document.getElementById('tFeedback').value
+                    })
+                });
+                document.getElementById('tName').value = '';
+                document.getElementById('tRole').value = '';
+                document.getElementById('tFeedback').value = '';
+                loadTestimonials();
+            } catch (err) {
+                alert(err.message || 'Could not save testimonial');
+            }
+        };
+
+        async function deleteTestimonial(id) {
+            try {
+                await safeFetch(`${API_BASE}/api/admin/testimonials/${id}`, {
+                    method: 'DELETE',
+                    headers: authHeaders()
+                });
+                loadTestimonials();
+            } catch (err) {
+                alert(err.message || 'Could not delete testimonial');
+            }
+        }
+
+        // --- WORK EXPERIENCE LOGIC ---
+        async function loadExperience() {
+            try {
+                const data = await safeFetch(`${API_BASE}/api/experiences`);
+                document.querySelector('#experienceTable tbody').innerHTML = data.map(e => `
+                    <tr>
+                        <td>${e.role}</td>
+                        <td>${e.company}</td>
+                        <td>${e.duration}</td>
+                        <td><button onclick="deleteExperience(${e.id})" class="delete-btn">Delete</button></td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Unable to load experience:', err);
+            }
+        }
+
+        document.getElementById('experienceForm').onsubmit = async (e) => {
+            e.preventDefault();
+            try {
+                await safeFetch(`${API_BASE}/api/admin/experiences`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+                    body: JSON.stringify({
+                        role: document.getElementById('expRole').value,
+                        company: document.getElementById('expCompany').value,
+                        duration: document.getElementById('expDuration').value,
+                        description: document.getElementById('expDesc').value
+                    })
+                });
+                document.getElementById('expRole').value = '';
+                document.getElementById('expCompany').value = '';
+                document.getElementById('expDuration').value = '';
+                document.getElementById('expDesc').value = '';
+                loadExperience();
+            } catch (err) {
+                alert(err.message || 'Could not save experience');
+            }
+        };
+
+        async function deleteExperience(id) {
+            try {
+                await safeFetch(`${API_BASE}/api/admin/experiences/${id}`, {
+                    method: 'DELETE',
+                    headers: authHeaders()
+                });
+                loadExperience();
+            } catch (err) {
+                alert(err.message || 'Could not delete experience');
+            }
+        }
+
+        // --- TRUSTED BRANDS LOGIC ---
+        async function loadBrands() {
+            try {
+                const data = await safeFetch(`${API_BASE}/api/brands`);
+                document.querySelector('#brandsTable tbody').innerHTML = data.map(b => {
+                    let imagePath = b.image_url || b.logo || '';
+                    if (imagePath && !imagePath.startsWith('http')) {
+                        imagePath = `${API_BASE}/${imagePath.replace(/^\//, '')}`;
+                    }
+                    return `
+                        <tr>
+                            <td><img src="${imagePath}" class="img-thumb" alt="Brand Logo"></td>
+                            <td>${b.name}</td>
+                            <td><button onclick="deleteBrand(${b.id})" class="delete-btn">Delete</button></td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error('Unable to load brands:', err);
+            }
+        }
+
+        document.getElementById('brandForm').onsubmit = async (e) => {
+            e.preventDefault();
+            try {
+                const formData = new FormData();
+                formData.append('name', document.getElementById('bName').value);
+                formData.append('logo', document.getElementById('bLogo').files[0]);
+
+                await safeFetch(`${API_BASE}/api/admin/brands`, {
+                    method: 'POST',
+                    headers: authHeaders(),
+                    body: formData
+                });
+                document.getElementById('bName').value = '';
+                document.getElementById('bLogo').value = '';
+                loadBrands();
+            } catch (err) {
+                alert(err.message || 'Could not add brand');
+            }
+        };
+
+        async function deleteBrand(id) {
+            try {
+                await safeFetch(`${API_BASE}/api/admin/brands/${id}`, {
+                    method: 'DELETE',
+                    headers: authHeaders()
+                });
+                loadBrands();
+            } catch (err) {
+                alert(err.message || 'Could not delete brand');
+            }
+        }
+
+        // --- GEARS LOGIC ---
+        async function loadGears() {
+            try {
+                const data = await safeFetch(`${API_BASE}/api/gears`);
+                document.querySelector('#gearsTable tbody').innerHTML = data.map(g => `
+                    <tr>
+                        <td>${g.name}</td>
+                        <td>${g.category}</td>
+                        <td>${g.specs || ''}</td>
+                        <td><button onclick="deleteGear(${g.id})" class="delete-btn">Delete</button></td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Unable to load gears:', err);
+            }
+        }
+
+        document.getElementById('gearForm').onsubmit = async (e) => {
+            e.preventDefault();
+            try {
+                await safeFetch(`${API_BASE}/api/admin/gears`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+                    body: JSON.stringify({
+                        name: document.getElementById('gName').value,
+                        category: document.getElementById('gCat').value,
+                        specs: document.getElementById('gSpecs').value
+                    })
+                });
+                document.getElementById('gName').value = '';
+                document.getElementById('gCat').value = '';
+                document.getElementById('gSpecs').value = '';
+                loadGears();
+            } catch (err) {
+                alert(err.message || 'Could not save gear');
+            }
+        };
+
+        async function deleteGear(id) {
+            try {
+                await safeFetch(`${API_BASE}/api/admin/gears/${id}`, {
+                    method: 'DELETE',
+                    headers: authHeaders()
+                });
+                loadGears();
+            } catch (err) {
+                alert(err.message || 'Could not delete gear');
             }
         }
 
