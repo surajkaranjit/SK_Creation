@@ -18,10 +18,15 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 // Global Middlewares
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(uploadDir));
 
 // Multer Storage Engine Configuration
 const storage = multer.diskStorage({
@@ -34,7 +39,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
     storage,
-    limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
+    limits: { fileSize: 25 * 1024 * 1024 } // 25MB limit
 });
 
 // Database Connection
@@ -74,6 +79,40 @@ db.serialize(() => {
         message TEXT,
         status TEXT DEFAULT 'New',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS gears (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        category TEXT,
+        name TEXT,
+        specs TEXT
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS experiences (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        role TEXT,
+        company TEXT,
+        duration TEXT,
+        description TEXT,
+        logo TEXT
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS brands (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        image_url TEXT
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS testimonials (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        role TEXT,
+        feedback TEXT
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS banner (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        url TEXT
     )`);
 
     // Default Admin Seeding: username: admin | password: admin123
@@ -123,14 +162,14 @@ app.post('/api/login', (req, res) => {
         const token = jwt.sign(
             { id: admin.id, username: admin.username },
             JWT_SECRET,
-            { expiresIn: '8h' }
+            { expiresIn: '24h' }
         );
 
         res.json({ token });
     });
 });
 
-// --- PUBLIC ROUTES ---
+// --- PUBLIC READ ROUTES ---
 app.get('/api/videos', (req, res) => {
     db.all(`SELECT * FROM videos ORDER BY id DESC`, [], (err, rows) => {
         if (err) return res.status(500).json({ error: 'Database error' });
@@ -142,6 +181,41 @@ app.get('/api/photos', (req, res) => {
     db.all(`SELECT * FROM photos ORDER BY id DESC`, [], (err, rows) => {
         if (err) return res.status(500).json({ error: 'Database error' });
         res.json(rows || []);
+    });
+});
+
+app.get('/api/gears', (req, res) => {
+    db.all(`SELECT * FROM gears ORDER BY id DESC`, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: 'Database error' });
+        res.json(rows || []);
+    });
+});
+
+app.get('/api/experiences', (req, res) => {
+    db.all(`SELECT * FROM experiences ORDER BY id DESC`, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: 'Database error' });
+        res.json(rows || []);
+    });
+});
+
+app.get('/api/brands', (req, res) => {
+    db.all(`SELECT * FROM brands ORDER BY id DESC`, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: 'Database error' });
+        res.json(rows || []);
+    });
+});
+
+app.get('/api/testimonials', (req, res) => {
+    db.all(`SELECT * FROM testimonials ORDER BY id DESC`, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: 'Database error' });
+        res.json(rows || []);
+    });
+});
+
+app.get('/api/banner', (req, res) => {
+    db.get(`SELECT * FROM banner ORDER BY id DESC LIMIT 1`, [], (err, row) => {
+        if (err) return res.status(500).json({ error: 'Database error' });
+        res.json(row || {});
     });
 });
 
@@ -161,10 +235,10 @@ app.post('/api/inquiries', (req, res) => {
     );
 });
 
-// --- PROTECTED ADMIN ROUTES ---
+// --- ADMIN WRITE ROUTES (SUPPORTING BOTH /api/admin/* AND /api/*) ---
 
-// Manage Videos
-app.post('/api/admin/videos', authenticateToken, (req, res) => {
+// 1. VIDEOS
+const handleAddVideo = (req, res) => {
     const { title, youtube_url, category } = req.body;
     if (!title || !youtube_url) {
         return res.status(400).json({ error: 'Title and YouTube URL are required' });
@@ -178,7 +252,9 @@ app.post('/api/admin/videos', authenticateToken, (req, res) => {
             res.status(201).json({ success: true, id: this.lastID });
         }
     );
-});
+};
+app.post('/api/admin/videos', authenticateToken, handleAddVideo);
+app.post('/api/videos', authenticateToken, handleAddVideo);
 
 app.delete('/api/admin/videos/:id', authenticateToken, (req, res) => {
     db.run(`DELETE FROM videos WHERE id = ?`, [req.params.id], function(err) {
@@ -187,36 +263,28 @@ app.delete('/api/admin/videos/:id', authenticateToken, (req, res) => {
     });
 });
 
-// Manage Photos (Guarded Against Empty Uploads)
-app.post('/api/admin/photos', authenticateToken, upload.single('image'), (req, res) => {
-    if (!req.file) {
-        return res.status(400).json({ error: 'No image file uploaded' });
-    }
-
-    const caption = req.body.caption || '';
+// 2. PHOTOS
+const handleAddPhoto = (req, res) => {
+    const caption = req.body.caption || req.body.title || '';
     const category = req.body.category || 'General';
     const description = req.body.description || '';
-    const image_url = `uploads/${req.file.filename}`;
+    const image_url = req.file ? `uploads/${req.file.filename}` : (req.body.image_url || '');
+
+    if (!image_url) {
+        return res.status(400).json({ error: 'Image file or image_url is required' });
+    }
 
     db.run(
         `INSERT INTO photos (caption, category, description, image_url) VALUES (?, ?, ?, ?)`,
         [caption, category, description, image_url],
         function(err) {
-            if (err) {
-                console.error('Database Insertion Error:', err);
-                return res.status(500).json({ error: 'Failed to insert photo' });
-            }
-            res.status(201).json({
-                success: true,
-                id: this.lastID,
-                caption,
-                category,
-                description,
-                image_url
-            });
+            if (err) return res.status(500).json({ error: 'Failed to insert photo' });
+            res.status(201).json({ success: true, id: this.lastID, caption, category, description, image_url });
         }
     );
-});
+};
+app.post('/api/admin/photos', authenticateToken, upload.single('image'), handleAddPhoto);
+app.post('/api/photos', authenticateToken, upload.single('image'), handleAddPhoto);
 
 app.delete('/api/admin/photos/:id', authenticateToken, (req, res) => {
     db.run(`DELETE FROM photos WHERE id = ?`, [req.params.id], function(err) {
@@ -225,7 +293,97 @@ app.delete('/api/admin/photos/:id', authenticateToken, (req, res) => {
     });
 });
 
-// View Inquiries
+// 3. GEARS
+const handleAddGear = (req, res) => {
+    const { category, name, specs } = req.body;
+    if (!name) return res.status(400).json({ error: 'Gear name is required' });
+
+    db.run(
+        `INSERT INTO gears (category, name, specs) VALUES (?, ?, ?)`,
+        [category || 'General', name, specs || ''],
+        function(err) {
+            if (err) return res.status(500).json({ error: 'Database error' });
+            res.status(201).json({ success: true, id: this.lastID });
+        }
+    );
+};
+app.post('/api/admin/gears', authenticateToken, handleAddGear);
+app.post('/api/gears', authenticateToken, handleAddGear);
+
+app.delete('/api/admin/gears/:id', authenticateToken, (req, res) => {
+    db.run(`DELETE FROM gears WHERE id = ?`, [req.params.id], function(err) {
+        if (err) return res.status(500).json({ error: 'Database error' });
+        res.json({ success: true, deleted: this.changes });
+    });
+});
+
+// 4. EXPERIENCES
+const handleAddExperience = (req, res) => {
+    const { role, company, duration, description } = req.body;
+    const logo = req.file ? `uploads/${req.file.filename}` : (req.body.logo || '');
+
+    if (!role || !company) return res.status(400).json({ error: 'Role and Company are required' });
+
+    db.run(
+        `INSERT INTO experiences (role, company, duration, description, logo) VALUES (?, ?, ?, ?, ?)`,
+        [role, company, duration || '', description || '', logo],
+        function(err) {
+            if (err) return res.status(500).json({ error: 'Database error' });
+            res.status(201).json({ success: true, id: this.lastID });
+        }
+    );
+};
+app.post('/api/admin/experiences', authenticateToken, upload.single('logo'), handleAddExperience);
+app.post('/api/experiences', authenticateToken, upload.single('logo'), handleAddExperience);
+
+// 5. BRANDS
+const handleAddBrand = (req, res) => {
+    const name = req.body.name || '';
+    const image_url = req.file ? `uploads/${req.file.filename}` : (req.body.image_url || '');
+
+    db.run(
+        `INSERT INTO brands (name, image_url) VALUES (?, ?)`,
+        [name, image_url],
+        function(err) {
+            if (err) return res.status(500).json({ error: 'Database error' });
+            res.status(201).json({ success: true, id: this.lastID });
+        }
+    );
+};
+app.post('/api/admin/brands', authenticateToken, upload.single('image'), handleAddBrand);
+app.post('/api/brands', authenticateToken, upload.single('image'), handleAddBrand);
+
+// 6. TESTIMONIALS
+const handleAddTestimonial = (req, res) => {
+    const { name, role, feedback } = req.body;
+    if (!feedback) return res.status(400).json({ error: 'Feedback is required' });
+
+    db.run(
+        `INSERT INTO testimonials (name, role, feedback) VALUES (?, ?, ?)`,
+        [name || 'Anonymous', role || 'Client', feedback],
+        function(err) {
+            if (err) return res.status(500).json({ error: 'Database error' });
+            res.status(201).json({ success: true, id: this.lastID });
+        }
+    );
+};
+app.post('/api/admin/testimonials', authenticateToken, handleAddTestimonial);
+app.post('/api/testimonials', authenticateToken, handleAddTestimonial);
+
+// 7. BANNER
+const handleAddBanner = (req, res) => {
+    const url = req.file ? `uploads/${req.file.filename}` : req.body.url;
+    if (!url) return res.status(400).json({ error: 'Banner URL or video file is required' });
+
+    db.run(`INSERT INTO banner (url) VALUES (?)`, [url], function(err) {
+        if (err) return res.status(500).json({ error: 'Database error' });
+        res.status(201).json({ success: true, id: this.lastID, url });
+    });
+};
+app.post('/api/admin/banner', authenticateToken, upload.single('banner'), handleAddBanner);
+app.post('/api/banner', authenticateToken, upload.single('banner'), handleAddBanner);
+
+// VIEW INQUIRIES
 app.get('/api/admin/inquiries', authenticateToken, (req, res) => {
     db.all(`SELECT * FROM inquiries ORDER BY id DESC`, [], (err, rows) => {
         if (err) return res.status(500).json({ error: 'Database error' });
