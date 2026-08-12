@@ -1727,6 +1727,111 @@
             });
         }
       });
+
+      const API_BASE = 'https://suraj-backend-jq7k.onrender.com';
+
+// Run on page load
+document.addEventListener('DOMContentLoaded', () => {
+    loadBanner();
+    loadTestimonials();
+    loadExperience();
+    loadBrands();
+    loadGears();
+});
+
+// 1. Fetch Banner Video
+async function loadBanner() {
+    try {
+        const res = await fetch(`${API_BASE}/api/banner`);
+        const data = await res.json();
+        if (data && data.url) {
+            const bannerIframe = document.querySelector('#hero-video-iframe');
+            if (bannerIframe) bannerIframe.src = data.url;
+        }
+    } catch (err) {
+        console.error('Failed to load banner:', err);
+    }
+}
+
+// 2. Fetch Testimonials
+async function loadTestimonials() {
+    try {
+        const res = await fetch(`${API_BASE}/api/testimonials`);
+        const data = await res.json();
+        const container = document.querySelector('#testimonials-grid');
+        if (container && data.length) {
+            container.innerHTML = data.map(item => `
+                <div class="testimonial-card">
+                    <p>"${item.feedback}"</p>
+                    <h4>${item.name}</h4>
+                    <span>${item.role}</span>
+                </div>
+            `).join('');
+        }
+    } catch (err) {
+        console.error('Failed to load testimonials:', err);
+    }
+}
+
+// 3. Fetch Work Experience
+async function loadExperience() {
+    try {
+        const res = await fetch(`${API_BASE}/api/experiences`);
+        const data = await res.json();
+        const container = document.querySelector('#experience-timeline');
+        if (container && data.length) {
+            container.innerHTML = data.map(item => `
+                <div class="exp-item">
+                    <span class="exp-date">${item.duration}</span>
+                    <h3>${item.role} — <span>${item.company}</span></h3>
+                    <p>${item.description || ''}</p>
+                </div>
+            `).join('');
+        }
+    } catch (err) {
+        console.error('Failed to load experience:', err);
+    }
+}
+
+// 4. Fetch Trusted Brands
+async function loadBrands() {
+    try {
+        const res = await fetch(`${API_BASE}/api/brands`);
+        const data = await res.json();
+        const container = document.querySelector('#brands-slider');
+        if (container && data.length) {
+            container.innerHTML = data.map(item => {
+                let imgPath = item.image_url || item.logo || '';
+                if (imgPath && !imgPath.startsWith('http')) imgPath = `${API_BASE}/${imgPath.replace(/^\//, '')}`;
+                return `<img src="${imgPath}" alt="${item.name}" title="${item.name}">`;
+            }).join('');
+        }
+    } catch (err) {
+        console.error('Failed to load brands:', err);
+    }
+}
+
+// 5. Fetch Our Gears
+async function loadGears() {
+    try {
+        const res = await fetch(`${API_BASE}/api/gears`);
+        const data = await res.json();
+        const container = document.querySelector('#gears-grid');
+        if (container && data.length) {
+            container.innerHTML = data.map(item => `
+                <div class="gear-card">
+                    <span class="gear-cat">${item.category}</span>
+                    <h3>${item.name}</h3>
+                    <p>${item.specs || ''}</p>
+                </div>
+            `).join('');
+        }
+    } catch (err) {
+        console.error('Failed to load gears:', err);
+    }
+}
     </script>
+
+    
 </body>
 </html>
