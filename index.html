@@ -1585,224 +1585,233 @@
         <p>&copy; 2026 SURAJ CREATION. All rights reserved.</p>
     </footer>
 
-    <!-- Consolidated JavaScript Script -->
-    <script>
-      const API_BASE = 'https://suraj-backend-jq7k.onrender.com';
+  <!-- Consolidated JavaScript Script -->
+  <script>
+    const API_BASE = 'https://suraj-backend-jq7k.onrender.com';
 
-      // 1. Fetch Dynamic Videos
-      async function loadDynamicVideos() {
-        try {
-          const response = await fetch(`${API_BASE}/api/videos`);
-          const videos = await response.json();
-          
-          const videoGrid = document.getElementById('videoGrid');
-          if (videoGrid && videos.length > 0) {
-            videoGrid.innerHTML = videos.map(video => `
-              <div class="video-card-box">
-                <div class="video-embed">
-                  <iframe src="${video.youtube_url}" allowfullscreen></iframe>
-                </div>
-                <div class="video-info">
-                  <p class="video-title">${video.title}</p>
-                </div>
-              </div>
-            `).join('');
-          }
-        } catch (err) {
-          console.error('Error fetching videos:', err);
-        }
-      }
+    // Helper function to convert standard YouTube links into embed URLs automatically
+    function formatYouTubeEmbedUrl(url) {
+      if (!url) return '';
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = url.match(regExp);
 
-      // 2. Fetch Dynamic Photos
-      async function loadDynamicPhotos() {
-        try {
-          const response = await fetch(`${API_BASE}/api/photos`);
-          const photos = await response.json();
-          
-          const gallery = document.getElementById('photoGallery');
-          if (!gallery || !photos || photos.length === 0) return;
+      return (match && match[2].length === 11) 
+          ? `https://www.youtube.com/embed/${match[2]}` 
+          : url;
+    }
 
-          gallery.innerHTML = '';
-
-          photos.forEach(photo => {
-            const photoDiv = document.createElement('div');
-            photoDiv.className = 'photo-item';
-            
-            const imageUrl = photo.image_url.startsWith('http') 
-              ? photo.image_url 
-              : `${API_BASE}/${photo.image_url.replace(/^\//, '')}`;
-
-            photoDiv.innerHTML = `
-              <img src="${imageUrl}" alt="${photo.title || 'Portfolio Image'}">
-              <div class="photo-overlay">
-                  <div class="photo-sub">${photo.category || 'Gallery'}</div>
-                  <div class="photo-caption">${photo.title || ''}</div>
-                  <p class="photo-desc">${photo.description || ''}</p>
-              </div>
-            `;
-            gallery.appendChild(photoDiv);
-          });
-        } catch (err) {
-          console.error('Error fetching photos:', err);
-        }
-      }
-
-      // 3. Fetch Banner Video
-      async function loadBanner() {
-        try {
-          const res = await fetch(`${API_BASE}/api/banner`);
-          const data = await res.json();
-          if (data && data.url) {
-            const container = document.querySelector('#hero-banner-container');
-            if (container) {
-              container.innerHTML = `
-                <iframe src="${data.url}" allow="autoplay; encrypted-media" allowfullscreen style="width:100%; height:100%; border:none;"></iframe>
-                <div class="video-overlay-gradient"></div>
-              `;
-            }
-          }
-        } catch (err) {
-          console.error('Failed to load banner:', err);
-        }
-      }
-
-      // 4. Fetch Testimonials
-      async function loadTestimonials() {
-        try {
-          const res = await fetch(`${API_BASE}/api/testimonials`);
-          const data = await res.json();
-          const container = document.querySelector('#testimonials-grid');
-          if (container && data.length) {
-            container.innerHTML = data.map(item => `
-              <blockquote class="testimonial-card">
-                <p>"${item.feedback || item.quote}"</p>
-                <cite class="testimonial-author">— ${item.name}${item.role ? `, ${item.role}` : ''}</cite>
-              </blockquote>
-            `).join('');
-          }
-        } catch (err) {
-          console.error('Failed to load testimonials:', err);
-        }
-      }
-
-      // 5. Fetch Work Experience
-      async function loadExperience() {
-        try {
-          const res = await fetch(`${API_BASE}/api/experiences`);
-          const data = await res.json();
-          const container = document.querySelector('#experience-timeline');
-          if (container && data.length) {
-            container.innerHTML = data.map(item => `
-              <article class="experience-card">
-                <div class="card-top">
-                  <h3 class="job-title">${item.role}</h3>
-                  ${item.logo ? `<div class="exp-logo"><img src="${item.logo.startsWith('http') ? item.logo : API_BASE + '/' + item.logo.replace(/^\//, '')}" alt="Logo"></div>` : ''}
-                </div>
-                <div class="exp-meta">
-                  <span class="company-name">${item.company}</span>
-                  <span class="divider">|</span>
-                  <span class="exp-date">${item.duration || item.date_range || ''}</span>
-                </div>
-                <p class="exp-description">${item.description || ''}</p>
-              </article>
-            `).join('');
-          }
-        } catch (err) {
-          console.error('Failed to load experience:', err);
-        }
-      }
-
-      // 6. Fetch Trusted Brands
-      async function loadBrands() {
-        try {
-          const res = await fetch(`${API_BASE}/api/brands`);
-          const data = await res.json();
-          const container = document.querySelector('#brands-slider');
-          if (container && data.length) {
-            const brandHTML = data.map(item => {
-              let imgPath = item.image_url || item.logo || '';
-              if (imgPath) {
-                if (!imgPath.startsWith('http')) imgPath = `${API_BASE}/${imgPath.replace(/^\//, '')}`;
-                return `<div class="brand-item"><img src="${imgPath}" alt="${item.name || 'Brand'}"></div>`;
-              } else {
-                return `<div class="brand-item"><span>${item.name}</span></div>`;
-              }
-            }).join('');
-            
-            // Duplicate content to ensure smooth seamless infinite scrolling
-            container.innerHTML = brandHTML + brandHTML;
-          }
-        } catch (err) {
-          console.error('Failed to load brands:', err);
-        }
-      }
-
-      // 7. Fetch Our Gears
-      async function loadGears() {
-        try {
-          const res = await fetch(`${API_BASE}/api/gears`);
-          const data = await res.json();
-          const container = document.querySelector('#gears-grid');
-          if (container && data.length) {
-            container.innerHTML = data.map(item => `
-              <div class="gear-card">
-                <div class="gear-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
-                    <circle cx="12" cy="13" r="3"/>
-                  </svg>
-                </div>
-                <h3 class="gear-category">${item.category || 'Gear'}</h3>
-                <p class="gear-details">${item.name} ${item.specs ? `(${item.specs})` : ''}</p>
-              </div>
-            `).join('');
-          }
-        } catch (err) {
-          console.error('Failed to load gears:', err);
-        }
-      }
-
-      // Initialize on DOM load
-      document.addEventListener('DOMContentLoaded', () => {
-        loadDynamicVideos();
-        loadDynamicPhotos();
-        loadBanner();
-        loadTestimonials();
-        loadExperience();
-        loadBrands();
-        loadGears();
-
-        // Photo Slider Controls
-        const photoGallery = document.getElementById('photoGallery');
-        const photoPrevBtn = document.getElementById('prevBtn');
-        const photoNextBtn = document.getElementById('nextBtn');
-
-        if (photoGallery && photoPrevBtn && photoNextBtn) {
-            photoNextBtn.addEventListener('click', function() {
-                photoGallery.scrollBy({ left: 340, behavior: 'smooth' });
-            });
-
-            photoPrevBtn.addEventListener('click', function() {
-                photoGallery.scrollBy({ left: -340, behavior: 'smooth' });
-            });
-        }
-
-        // Video Slider Controls
+    // 1. Fetch Dynamic Videos
+    async function loadDynamicVideos() {
+      try {
+        const response = await fetch(`${API_BASE}/api/videos`);
+        const videos = await response.json();
+        
         const videoGrid = document.getElementById('videoGrid');
-        const videoPrevBtn = document.getElementById('videoPrevBtn');
-        const videoNextBtn = document.getElementById('videoNextBtn');
-
-        if (videoGrid && videoPrevBtn && videoNextBtn) {
-            videoNextBtn.addEventListener('click', function() {
-                videoGrid.scrollBy({ left: 400, behavior: 'smooth' });
-            });
-
-            videoPrevBtn.addEventListener('click', function() {
-                videoGrid.scrollBy({ left: -400, behavior: 'smooth' });
-            });
+        if (videoGrid && videos.length > 0) {
+          videoGrid.innerHTML = videos.map(video => `
+            <div class="video-card-box">
+              <div class="video-embed">
+                <iframe src="${formatYouTubeEmbedUrl(video.youtube_url)}" allowfullscreen></iframe>
+              </div>
+              <div class="video-info">
+                <p class="video-title">${video.title || 'Untitled'}</p>
+              </div>
+            </div>
+          `).join('');
         }
-      });
-      
-    </script>
+      } catch (err) {
+        console.error('Error fetching videos:', err);
+      }
+    }
+
+    // 2. Fetch Dynamic Photos
+    async function loadDynamicPhotos() {
+      try {
+        const response = await fetch(`${API_BASE}/api/photos`);
+        const photos = await response.json();
+        
+        const gallery = document.getElementById('photoGallery');
+        if (!gallery || !photos || photos.length === 0) return;
+
+        gallery.innerHTML = '';
+
+        photos.forEach(photo => {
+          const photoDiv = document.createElement('div');
+          photoDiv.className = 'photo-item';
+          
+          const imageUrl = photo.image_url.startsWith('http') 
+            ? photo.image_url 
+            : `${API_BASE}/${photo.image_url.replace(/^\//, '')}`;
+
+          photoDiv.innerHTML = `
+            <img src="${imageUrl}" alt="${photo.title || 'Portfolio Image'}">
+            <div class="photo-overlay">
+                <div class="photo-sub">${photo.category || 'Gallery'}</div>
+                <div class="photo-caption">${photo.title || ''}</div>
+                <p class="photo-desc">${photo.description || ''}</p>
+            </div>
+          `;
+          gallery.appendChild(photoDiv);
+        });
+      } catch (err) {
+        console.error('Error fetching photos:', err);
+      }
+    }
+
+    // 3. Fetch Banner Video
+    async function loadBanner() {
+      try {
+        const res = await fetch(`${API_BASE}/api/banner`);
+        const data = await res.json();
+        if (data && data.url) {
+          const container = document.querySelector('#hero-banner-container');
+          if (container) {
+            container.innerHTML = `
+              <iframe src="${formatYouTubeEmbedUrl(data.url)}" allow="autoplay; encrypted-media" allowfullscreen style="width:100%; height:100%; border:none;"></iframe>
+              <div class="video-overlay-gradient"></div>
+            `;
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load banner:', err);
+      }
+    }
+
+    // 4. Fetch Testimonials
+    async function loadTestimonials() {
+      try {
+        const res = await fetch(`${API_BASE}/api/testimonials`);
+        const data = await res.json();
+        const container = document.querySelector('#testimonials-grid');
+        if (container && data.length) {
+          container.innerHTML = data.map(item => `
+            <blockquote class="testimonial-card">
+              <p>"${item.feedback || item.quote}"</p>
+              <cite class="testimonial-author">— ${item.name}${item.role ? `, ${item.role}` : ''}</cite>
+            </blockquote>
+          `).join('');
+        }
+      } catch (err) {
+        console.error('Failed to load testimonials:', err);
+      }
+    }
+
+    // 5. Fetch Work Experience
+    async function loadExperience() {
+      try {
+        const res = await fetch(`${API_BASE}/api/experiences`);
+        const data = await res.json();
+        const container = document.querySelector('#experience-timeline');
+        if (container && data.length) {
+          container.innerHTML = data.map(item => `
+            <article class="experience-card">
+              <div class="card-top">
+                <h3 class="job-title">${item.role}</h3>
+                ${item.logo ? `<div class="exp-logo"><img src="${item.logo.startsWith('http') ? item.logo : API_BASE + '/' + item.logo.replace(/^\//, '')}" alt="Logo"></div>` : ''}
+              </div>
+              <div class="exp-meta">
+                <span class="company-name">${item.company}</span>
+                <span class="divider">|</span>
+                <span class="exp-date">${item.duration || item.date_range || ''}</span>
+              </div>
+              <p class="exp-description">${item.description || ''}</p>
+            </article>
+          `).join('');
+        }
+      } catch (err) {
+        console.error('Failed to load experience:', err);
+      }
+    }
+
+    // 6. Fetch Trusted Brands
+    async function loadBrands() {
+      try {
+        const res = await fetch(`${API_BASE}/api/brands`);
+        const data = await res.json();
+        const container = document.querySelector('#brands-slider');
+        if (container && data.length) {
+          const brandHTML = data.map(item => {
+            let imgPath = item.image_url || item.logo || '';
+            if (imgPath) {
+              if (!imgPath.startsWith('http')) imgPath = `${API_BASE}/${imgPath.replace(/^\//, '')}`;
+              return `<div class="brand-item"><img src="${imgPath}" alt="${item.name || 'Brand'}"></div>`;
+            } else {
+              return `<div class="brand-item"><span>${item.name}</span></div>`;
+            }
+          }).join('');
+          
+          container.innerHTML = brandHTML;
+        }
+      } catch (err) {
+        console.error('Failed to load brands:', err);
+      }
+    }
+
+    // 7. Fetch Our Gears
+    async function loadGears() {
+      try {
+        const res = await fetch(`${API_BASE}/api/gears`);
+        const data = await res.json();
+        const container = document.querySelector('#gears-grid');
+        if (container && data.length) {
+          container.innerHTML = data.map(item => `
+            <div class="gear-card">
+              <div class="gear-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
+                  <circle cx="12" cy="13" r="3"/>
+                </svg>
+              </div>
+              <h3 class="gear-category">${item.category || 'Gear'}</h3>
+              <p class="gear-details">${item.name} ${item.specs ? `(${item.specs})` : ''}</p>
+            </div>
+          `).join('');
+        }
+      } catch (err) {
+        console.error('Failed to load gears:', err);
+      }
+    }
+
+    // Initialize on DOM load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadDynamicVideos();
+      loadDynamicPhotos();
+      loadBanner();
+      loadTestimonials();
+      loadExperience();
+      loadBrands();
+      loadGears();
+
+      // Photo Slider Controls
+      const photoGallery = document.getElementById('photoGallery');
+      const photoPrevBtn = document.getElementById('prevBtn');
+      const photoNextBtn = document.getElementById('nextBtn');
+
+      if (photoGallery && photoPrevBtn && photoNextBtn) {
+          photoNextBtn.addEventListener('click', function() {
+              photoGallery.scrollBy({ left: 340, behavior: 'smooth' });
+          });
+
+          photoPrevBtn.addEventListener('click', function() {
+              photoGallery.scrollBy({ left: -340, behavior: 'smooth' });
+          });
+      }
+
+      // Video Slider Controls
+      const videoGrid = document.getElementById('videoGrid');
+      const videoPrevBtn = document.getElementById('videoPrevBtn');
+      const videoNextBtn = document.getElementById('videoNextBtn');
+
+      if (videoGrid && videoPrevBtn && videoNextBtn) {
+          videoNextBtn.addEventListener('click', function() {
+              videoGrid.scrollBy({ left: 400, behavior: 'smooth' });
+          });
+
+          videoPrevBtn.addEventListener('click', function() {
+              videoGrid.scrollBy({ left: -400, behavior: 'smooth' });
+          });
+      }
+    });
+  </script>
 </body>
 </html>
