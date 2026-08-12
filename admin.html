@@ -52,7 +52,7 @@
                 <input type="text" id="username" required>
                 <label>Password</label>
                 <input type="password" id="password" required>
-                <button type="submit" class="btn">Sign In</button>
+                <button type="submit" id="loginSubmitBtn" class="btn">Sign In</button>
             </form>
         </div>
     </div>
@@ -81,7 +81,7 @@
                         <form id="bannerForm">
                             <label>YouTube Embed URL or Direct Video Link</label>
                             <input type="text" id="bannerUrl" placeholder="https://www.youtube.com/embed/..." required>
-                            <button type="submit" class="btn">Update Banner Video</button>
+                            <button type="submit" id="bannerSubmitBtn" class="btn">Update Banner Video</button>
                         </form>
                     </div>
                 </div>
@@ -94,7 +94,7 @@
                             <input type="text" id="vTitle" placeholder="Title (e.g. Color Grade Pass)" required>
                             <input type="text" id="vUrl" placeholder="YouTube Embed URL" required>
                             <input type="text" id="vCat" placeholder="Category" required>
-                            <button type="submit" class="btn">Add Video</button>
+                            <button type="submit" id="videoSubmitBtn" class="btn">Add Video</button>
                         </form>
                     </div>
                     <table id="videosTable">
@@ -129,7 +129,7 @@
                             <input type="text" id="tName" placeholder="Client Name" required>
                             <input type="text" id="tRole" placeholder="Role/Company (e.g. CEO at Brand)" required>
                             <textarea id="tFeedback" placeholder="Client Review/Feedback" required></textarea>
-                            <button type="submit" class="btn">Add Testimonial</button>
+                            <button type="submit" id="testimonialSubmitBtn" class="btn">Add Testimonial</button>
                         </form>
                     </div>
                     <table id="testimonialsTable">
@@ -147,7 +147,7 @@
                             <input type="text" id="expCompany" placeholder="Company/Project Name" required>
                             <input type="text" id="expDuration" placeholder="Duration (e.g. 2021 - Present)" required>
                             <textarea id="expDesc" placeholder="Brief Responsibilities"></textarea>
-                            <button type="submit" class="btn">Add Experience</button>
+                            <button type="submit" id="experienceSubmitBtn" class="btn">Add Experience</button>
                         </form>
                     </div>
                     <table id="experienceTable">
@@ -163,7 +163,7 @@
                         <form id="brandForm" enctype="multipart/form-data">
                             <input type="text" id="bName" placeholder="Brand Name" required>
                             <input type="file" id="bLogo" accept="image/*" required>
-                            <button type="submit" class="btn">Add Brand Logo</button>
+                            <button type="submit" id="brandSubmitBtn" class="btn">Add Brand Logo</button>
                         </form>
                     </div>
                     <table id="brandsTable">
@@ -180,7 +180,7 @@
                             <input type="text" id="gName" placeholder="Gear Name (e.g. Sony A7IV)" required>
                             <input type="text" id="gCat" placeholder="Category (e.g. Camera, Lens, Lighting)" required>
                             <input type="text" id="gSpecs" placeholder="Short Specs / Description">
-                            <button type="submit" class="btn">Add Gear</button>
+                            <button type="submit" id="gearSubmitBtn" class="btn">Add Gear</button>
                         </form>
                     </div>
                     <table id="gearsTable">
@@ -228,6 +228,11 @@
 
         document.getElementById('loginForm').onsubmit = async (e) => {
             e.preventDefault();
+            const submitBtn = document.getElementById('loginSubmitBtn');
+            if (submitBtn.disabled) return;
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Signing In...';
+
             try {
                 const res = await fetch(`${API_BASE}/api/login`, {
                     method: 'POST',
@@ -243,6 +248,9 @@
                 showDashboard();
             } catch (err) {
                 alert(err.message || 'Login failed');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Sign In';
             }
         };
 
@@ -286,6 +294,11 @@
 
         document.getElementById('bannerForm').onsubmit = async (e) => {
             e.preventDefault();
+            const submitBtn = document.getElementById('bannerSubmitBtn');
+            if (submitBtn.disabled) return;
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Updating...';
+
             try {
                 await safeFetch(`${API_BASE}/api/admin/banner`, {
                     method: 'POST',
@@ -295,6 +308,9 @@
                 alert('Banner video updated successfully');
             } catch (err) {
                 alert(err.message || 'Could not save banner video');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Update Banner Video';
             }
         };
 
@@ -316,6 +332,11 @@
 
         document.getElementById('videoForm').onsubmit = async (e) => {
             e.preventDefault();
+            const submitBtn = document.getElementById('videoSubmitBtn');
+            if (submitBtn.disabled) return;
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Adding...';
+
             try {
                 await safeFetch(`${API_BASE}/api/admin/videos`, {
                     method: 'POST',
@@ -332,6 +353,9 @@
                 loadVideos();
             } catch (err) {
                 alert(err.message || 'Could not save video');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Add Video';
             }
         };
 
@@ -434,6 +458,11 @@
 
         document.getElementById('testimonialForm').onsubmit = async (e) => {
             e.preventDefault();
+            const submitBtn = document.getElementById('testimonialSubmitBtn');
+            if (submitBtn.disabled) return;
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Adding...';
+
             try {
                 await safeFetch(`${API_BASE}/api/admin/testimonials`, {
                     method: 'POST',
@@ -450,6 +479,9 @@
                 loadTestimonials();
             } catch (err) {
                 alert(err.message || 'Could not save testimonial');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Add Testimonial';
             }
         };
 
@@ -484,6 +516,11 @@
 
         document.getElementById('experienceForm').onsubmit = async (e) => {
             e.preventDefault();
+            const submitBtn = document.getElementById('experienceSubmitBtn');
+            if (submitBtn.disabled) return;
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Adding...';
+
             try {
                 await safeFetch(`${API_BASE}/api/admin/experiences`, {
                     method: 'POST',
@@ -502,6 +539,9 @@
                 loadExperience();
             } catch (err) {
                 alert(err.message || 'Could not save experience');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Add Experience';
             }
         };
 
@@ -541,6 +581,11 @@
 
         document.getElementById('brandForm').onsubmit = async (e) => {
             e.preventDefault();
+            const submitBtn = document.getElementById('brandSubmitBtn');
+            if (submitBtn.disabled) return;
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Uploading...';
+
             try {
                 const formData = new FormData();
                 formData.append('name', document.getElementById('bName').value);
@@ -556,6 +601,9 @@
                 loadBrands();
             } catch (err) {
                 alert(err.message || 'Could not add brand');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Add Brand Logo';
             }
         };
 
@@ -590,6 +638,11 @@
 
         document.getElementById('gearForm').onsubmit = async (e) => {
             e.preventDefault();
+            const submitBtn = document.getElementById('gearSubmitBtn');
+            if (submitBtn.disabled) return;
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Adding...';
+
             try {
                 await safeFetch(`${API_BASE}/api/admin/gears`, {
                     method: 'POST',
@@ -606,6 +659,9 @@
                 loadGears();
             } catch (err) {
                 alert(err.message || 'Could not save gear');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Add Gear';
             }
         };
 
