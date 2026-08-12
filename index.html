@@ -628,8 +628,8 @@
         <p>Based in Kathmandu, Nepal. Crafting premium cinematic narratives, high-end video edits, and capturing timeless photographic moments.</p>
 
         <!-- Main Showreel Embed Container -->
-        <div class="reel-container">
-          <video autoplay loop muted playsinline width="100%">
+        <div class="reel-container" id="hero-banner-container">
+          <video id="hero-video-element" autoplay loop muted playsinline width="100%">
             <source src="public/make_short_video_for_my_websit.mp4" type="video/mp4">
             Your browser does not support the video tag.
           </video>
@@ -1084,7 +1084,8 @@
     <section id="gear" class="gear">
       <h2 class="glowing-title">Our Gear</h2>
 
-      <div class="gear-grid">
+      <!-- Dynamic Gears Grid -->
+      <div class="gear-grid" id="gears-grid">
         <div class="gear-card">
           <div class="gear-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -1233,7 +1234,8 @@
       <h2 class="section-title">Work Experience</h2>
       <div class="title-line"></div>
 
-      <div class="experience-container">
+      <!-- Dynamic Experience Timeline -->
+      <div class="experience-container" id="experience-timeline">
         <article class="experience-card">
           <div class="card-top">
             <h3 class="job-title">Senior Cinematographer &amp; Editor</h3>
@@ -1267,40 +1269,6 @@
           <p class="exp-description">
             Edited high-turnaround brand films and promotional media using Premiere Pro and After Effects. 
             Handled narrative pacing, sound design, and color polishing.
-          </p>
-        </article>
-
-        <article class="experience-card">
-          <div class="card-top">
-            <h3 class="job-title">Motion Graphics Designer</h3>
-            <div class="exp-logo">
-              <img src="public/Asset 2.png" alt="Company Logo">
-            </div>
-          </div>
-          <div class="exp-meta">
-            <span class="company-name">Creative Media Studio</span>
-            <span class="divider">|</span>
-            <span class="exp-date">2023 - 2024</span>
-          </div>
-          <p class="exp-description">
-            Designed 2D/3D motion graphics, lower thirds, and animated logos for corporate promotional videos.
-          </p>
-        </article>
-
-        <article class="experience-card">
-          <div class="card-top">
-            <h3 class="job-title">Junior Video Editor</h3>
-            <div class="exp-logo">
-              <img src="public/Asset 3.png" alt="Company Logo">
-            </div>
-          </div>
-          <div class="exp-meta">
-            <span class="company-name">Digital Production House</span>
-            <span class="divider">|</span>
-            <span class="exp-date">2022 - 2023</span>
-          </div>
-          <p class="exp-description">
-            Assisted lead editors in sorting footage, multi-cam synchronization, and basic assembly cuts.
           </p>
         </article>
       </div>
@@ -1382,25 +1350,13 @@
     <section class="trusted-brands-section">
       <p class="trusted-brands-title">TRUSTED BY BRANDS & CREATORS</p>
       
-      <div class="brand-slider-track">
+      <!-- Dynamic Brands Slider -->
+      <div class="brand-slider-track" id="brands-slider">
           <div class="brand-item">
               <img src="public/Asset 1.png" alt="Ropani Sewa Logo">
           </div>
           <div class="brand-item">
               <img src="public/KIT 1.png" alt="Kathmandu Info Tech Logo">
-          </div>
-          <div class="brand-item">
-              <span>Suraj Creation Production</span>
-          </div>
-          <div class="brand-item">
-              <span>Commercial Media Lab</span>
-          </div>
-
-          <div class="brand-item">
-              <img src="public/Asset 1.png" alt="Ropani Sewa Logo">
-          </div>
-          <div class="brand-item">
-              <img src="KIT 1.png" alt="Kathmandu Info Tech Logo">
           </div>
           <div class="brand-item">
               <span>Suraj Creation Production</span>
@@ -1482,7 +1438,8 @@
     <section class="testimonials-section">
       <h2 class="testimonials-title glowing-title">What Clients Say</h2>
       
-      <div class="testimonial-grid">
+      <!-- Dynamic Testimonials Grid -->
+      <div class="testimonial-grid" id="testimonials-grid">
         <blockquote class="testimonial-card">
           <p>"Suraj delivered high-quality cinematic visuals and handled color grading with incredible attention to detail."</p>
           <cite class="testimonial-author">— Creative Director, Local Brand</cite>
@@ -1491,11 +1448,6 @@
         <blockquote class="testimonial-card">
           <p>"Fast turnaround, professional setup, and high-end video edits. Suraj is our go-to cinematographer for brand campaigns."</p>
           <cite class="testimonial-author">— Project Lead, Kathmandu Info Tech</cite>
-        </blockquote>
-
-        <blockquote class="testimonial-card">
-          <p>"Exceeded our expectations on the commercial reel. The framing and motion pacing were top-tier."</p>
-          <cite class="testimonial-author">— Producer, Ropani Sewa</cite>
         </blockquote>
       </div>
     </section>
@@ -1514,7 +1466,6 @@
                 <li>
                     <span class="contact-label">Call / WhatsApp</span>
                     <a href="tel:+977 9849447195" class="contact-link">+977 9849447195</a>
-                    <link rel="icon" type="image/png" href="Asset 1.png">
                 </li>
                 <li>
                     <span class="contact-label">Location</span>
@@ -1634,9 +1585,11 @@
         <p>&copy; 2026 SURAJ CREATION. All rights reserved.</p>
     </footer>
 
+    <!-- Consolidated JavaScript Script -->
     <script>
       const API_BASE = 'https://suraj-backend-jq7k.onrender.com';
 
+      // 1. Fetch Dynamic Videos
       async function loadDynamicVideos() {
         try {
           const response = await fetch(`${API_BASE}/api/videos`);
@@ -1660,6 +1613,7 @@
         }
       }
 
+      // 2. Fetch Dynamic Photos
       async function loadDynamicPhotos() {
         try {
           const response = await fetch(`${API_BASE}/api/photos`);
@@ -1676,7 +1630,7 @@
             
             const imageUrl = photo.image_url.startsWith('http') 
               ? photo.image_url 
-              : `${API_BASE}/${photo.image_url}`;
+              : `${API_BASE}/${photo.image_url.replace(/^\//, '')}`;
 
             photoDiv.innerHTML = `
               <img src="${imageUrl}" alt="${photo.title || 'Portfolio Image'}">
@@ -1693,9 +1647,130 @@
         }
       }
 
+      // 3. Fetch Banner Video
+      async function loadBanner() {
+        try {
+          const res = await fetch(`${API_BASE}/api/banner`);
+          const data = await res.json();
+          if (data && data.url) {
+            const container = document.querySelector('#hero-banner-container');
+            if (container) {
+              container.innerHTML = `
+                <iframe src="${data.url}" allow="autoplay; encrypted-media" allowfullscreen style="width:100%; height:100%; border:none;"></iframe>
+                <div class="video-overlay-gradient"></div>
+              `;
+            }
+          }
+        } catch (err) {
+          console.error('Failed to load banner:', err);
+        }
+      }
+
+      // 4. Fetch Testimonials
+      async function loadTestimonials() {
+        try {
+          const res = await fetch(`${API_BASE}/api/testimonials`);
+          const data = await res.json();
+          const container = document.querySelector('#testimonials-grid');
+          if (container && data.length) {
+            container.innerHTML = data.map(item => `
+              <blockquote class="testimonial-card">
+                <p>"${item.feedback || item.quote}"</p>
+                <cite class="testimonial-author">— ${item.name}${item.role ? `, ${item.role}` : ''}</cite>
+              </blockquote>
+            `).join('');
+          }
+        } catch (err) {
+          console.error('Failed to load testimonials:', err);
+        }
+      }
+
+      // 5. Fetch Work Experience
+      async function loadExperience() {
+        try {
+          const res = await fetch(`${API_BASE}/api/experiences`);
+          const data = await res.json();
+          const container = document.querySelector('#experience-timeline');
+          if (container && data.length) {
+            container.innerHTML = data.map(item => `
+              <article class="experience-card">
+                <div class="card-top">
+                  <h3 class="job-title">${item.role}</h3>
+                  ${item.logo ? `<div class="exp-logo"><img src="${item.logo.startsWith('http') ? item.logo : API_BASE + '/' + item.logo.replace(/^\//, '')}" alt="Logo"></div>` : ''}
+                </div>
+                <div class="exp-meta">
+                  <span class="company-name">${item.company}</span>
+                  <span class="divider">|</span>
+                  <span class="exp-date">${item.duration || item.date_range || ''}</span>
+                </div>
+                <p class="exp-description">${item.description || ''}</p>
+              </article>
+            `).join('');
+          }
+        } catch (err) {
+          console.error('Failed to load experience:', err);
+        }
+      }
+
+      // 6. Fetch Trusted Brands
+      async function loadBrands() {
+        try {
+          const res = await fetch(`${API_BASE}/api/brands`);
+          const data = await res.json();
+          const container = document.querySelector('#brands-slider');
+          if (container && data.length) {
+            const brandHTML = data.map(item => {
+              let imgPath = item.image_url || item.logo || '';
+              if (imgPath) {
+                if (!imgPath.startsWith('http')) imgPath = `${API_BASE}/${imgPath.replace(/^\//, '')}`;
+                return `<div class="brand-item"><img src="${imgPath}" alt="${item.name || 'Brand'}"></div>`;
+              } else {
+                return `<div class="brand-item"><span>${item.name}</span></div>`;
+              }
+            }).join('');
+            
+            // Duplicate content to ensure smooth seamless infinite scrolling
+            container.innerHTML = brandHTML + brandHTML;
+          }
+        } catch (err) {
+          console.error('Failed to load brands:', err);
+        }
+      }
+
+      // 7. Fetch Our Gears
+      async function loadGears() {
+        try {
+          const res = await fetch(`${API_BASE}/api/gears`);
+          const data = await res.json();
+          const container = document.querySelector('#gears-grid');
+          if (container && data.length) {
+            container.innerHTML = data.map(item => `
+              <div class="gear-card">
+                <div class="gear-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
+                    <circle cx="12" cy="13" r="3"/>
+                  </svg>
+                </div>
+                <h3 class="gear-category">${item.category || 'Gear'}</h3>
+                <p class="gear-details">${item.name} ${item.specs ? `(${item.specs})` : ''}</p>
+              </div>
+            `).join('');
+          }
+        } catch (err) {
+          console.error('Failed to load gears:', err);
+        }
+      }
+
+      // Initialize on DOM load
       document.addEventListener('DOMContentLoaded', () => {
         loadDynamicVideos();
         loadDynamicPhotos();
+        loadBanner();
+        loadTestimonials();
+        loadExperience();
+        loadBrands();
+        loadGears();
 
         // Photo Slider Controls
         const photoGallery = document.getElementById('photoGallery');
@@ -1727,111 +1802,6 @@
             });
         }
       });
-
-      const API_BASE = 'https://suraj-backend-jq7k.onrender.com';
-
-// Run on page load
-document.addEventListener('DOMContentLoaded', () => {
-    loadBanner();
-    loadTestimonials();
-    loadExperience();
-    loadBrands();
-    loadGears();
-});
-
-// 1. Fetch Banner Video
-async function loadBanner() {
-    try {
-        const res = await fetch(`${API_BASE}/api/banner`);
-        const data = await res.json();
-        if (data && data.url) {
-            const bannerIframe = document.querySelector('#hero-video-iframe');
-            if (bannerIframe) bannerIframe.src = data.url;
-        }
-    } catch (err) {
-        console.error('Failed to load banner:', err);
-    }
-}
-
-// 2. Fetch Testimonials
-async function loadTestimonials() {
-    try {
-        const res = await fetch(`${API_BASE}/api/testimonials`);
-        const data = await res.json();
-        const container = document.querySelector('#testimonials-grid');
-        if (container && data.length) {
-            container.innerHTML = data.map(item => `
-                <div class="testimonial-card">
-                    <p>"${item.feedback}"</p>
-                    <h4>${item.name}</h4>
-                    <span>${item.role}</span>
-                </div>
-            `).join('');
-        }
-    } catch (err) {
-        console.error('Failed to load testimonials:', err);
-    }
-}
-
-// 3. Fetch Work Experience
-async function loadExperience() {
-    try {
-        const res = await fetch(`${API_BASE}/api/experiences`);
-        const data = await res.json();
-        const container = document.querySelector('#experience-timeline');
-        if (container && data.length) {
-            container.innerHTML = data.map(item => `
-                <div class="exp-item">
-                    <span class="exp-date">${item.duration}</span>
-                    <h3>${item.role} — <span>${item.company}</span></h3>
-                    <p>${item.description || ''}</p>
-                </div>
-            `).join('');
-        }
-    } catch (err) {
-        console.error('Failed to load experience:', err);
-    }
-}
-
-// 4. Fetch Trusted Brands
-async function loadBrands() {
-    try {
-        const res = await fetch(`${API_BASE}/api/brands`);
-        const data = await res.json();
-        const container = document.querySelector('#brands-slider');
-        if (container && data.length) {
-            container.innerHTML = data.map(item => {
-                let imgPath = item.image_url || item.logo || '';
-                if (imgPath && !imgPath.startsWith('http')) imgPath = `${API_BASE}/${imgPath.replace(/^\//, '')}`;
-                return `<img src="${imgPath}" alt="${item.name}" title="${item.name}">`;
-            }).join('');
-        }
-    } catch (err) {
-        console.error('Failed to load brands:', err);
-    }
-}
-
-// 5. Fetch Our Gears
-async function loadGears() {
-    try {
-        const res = await fetch(`${API_BASE}/api/gears`);
-        const data = await res.json();
-        const container = document.querySelector('#gears-grid');
-        if (container && data.length) {
-            container.innerHTML = data.map(item => `
-                <div class="gear-card">
-                    <span class="gear-cat">${item.category}</span>
-                    <h3>${item.name}</h3>
-                    <p>${item.specs || ''}</p>
-                </div>
-            `).join('');
-        }
-    } catch (err) {
-        console.error('Failed to load gears:', err);
-    }
-}
     </script>
-
-    
 </body>
 </html>
