@@ -1802,41 +1802,7 @@
             });
         }
       });
-
-      function formatYouTubeEmbedUrl(url) {
-          if (!url) return '';
-          
-          // Convert watch link (youtube.com/watch?v=ID) or short link (youtu.be/ID) to embed format
-          const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-          const match = url.match(regExp);
-
-          return (match && match[2].length === 11) 
-              ? `https://www.youtube.com/embed/${match[2]}` 
-              : url;
-      }
-
-      // Example usage when loading videos:
-      async function loadPublicVideos() {
-          const container = document.getElementById('videos-container');
-          if (!container) return;
-
-          const res = await fetch('https://suraj-backend-jq7k.onrender.com/api/videos');
-          const videos = await res.json();
-
-          container.innerHTML = videos.map(video => `
-              <div class="video-card">
-                  <iframe 
-                      src="${formatYouTubeEmbedUrl(video.youtube_url)}" 
-                      frameborder="0" 
-                      allowfullscreen>
-                  </iframe>
-                  <h3>${video.title}</h3>
-              </div>
-          `).join('');
-      }
-
-      // Call the function when page loads
-      document.addEventListener('DOMContentLoaded', loadPublicVideos)
+      
     </script>
 </body>
 </html>
