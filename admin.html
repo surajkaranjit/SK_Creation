@@ -14,7 +14,7 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpeW1zaGV4cG1lcXdua2txaXR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYyNDU5NjQsImV4cCI6MjEwMTgyMTk2NH0.0-GBJ9DMvWoIP2E5EhCm_RWIQyQPDIjerknclhtU3U8';
     
     // Initialized as supabaseClient to prevent variable redeclaration conflicts
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // Helper function to auto-format YouTube links & Shorts to Embed URLs
     function formatYouTubeUrl(url) {
@@ -279,7 +279,7 @@
 
         // --- BANNER VIDEO LOGIC ---
         async function loadBannerVideo() {
-            const { data } = await supabaseClient.from('banner').select('*').single();
+            const { data } = await supabaseClient.from('banner').select('*').maybeSingle();
             if (data && data.url) {
                 document.getElementById('bannerUrl').value = data.url;
             }
