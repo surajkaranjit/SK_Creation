@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SURAJ CREATION | Admin Panel</title>
+    
+    <script>
+    // 1. YOUR SUPABASE CREDENTIALS
+    const SUPABASE_URL = 'https://biymshexpmeqnkkqitz.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpeW1zaGV4cG1lcXdua2txaXR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYyNDU5NjQsImV4cCI6MjEwMTgyMTk2NH0.0-GBJ9DMvWoIP2E5EhCm_RWIQyQPDIjerknclhtU3U8';
+    
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ... rest of your code remains below
+</script>
+    
     <style>
         :root {
             --bg-dark: #0A0D14;
@@ -40,6 +51,8 @@
         .img-thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; }
         .delete-btn { color: #ff4d4d; background: none; border: none; cursor: pointer; font-weight: 600; }
     </style>
+    <!-- Include Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -48,8 +61,8 @@
         <div class="card">
             <h2 style="margin-bottom: 20px; text-align: center;">Admin Auth</h2>
             <form id="loginForm">
-                <label>Username</label>
-                <input type="text" id="username" required>
+                <label>Email</label>
+                <input type="email" id="email" required placeholder="admin@example.com">
                 <label>Password</label>
                 <input type="password" id="password" required>
                 <button type="submit" id="loginSubmitBtn" class="btn">Sign In</button>
@@ -107,7 +120,7 @@
                 <div id="photosTab" class="section">
                     <h2>Manage Photography</h2>
                     <div class="card" style="margin-top: 20px;">
-                        <form id="photoForm" enctype="multipart/form-data">
+                        <form id="photoForm">
                             <input type="text" id="pCaption" placeholder="Caption" required>
                             <input type="text" id="pCat" placeholder="Category" required>
                             <textarea id="pDesc" placeholder="Description"></textarea>
@@ -160,7 +173,7 @@
                 <div id="brandsTab" class="section">
                     <h2>Trusted Brands</h2>
                     <div class="card" style="margin-top: 20px;">
-                        <form id="brandForm" enctype="multipart/form-data">
+                        <form id="brandForm">
                             <input type="text" id="bName" placeholder="Brand Name" required>
                             <input type="file" id="bLogo" accept="image/*" required>
                             <button type="submit" id="brandSubmitBtn" class="btn">Add Brand Logo</button>
@@ -202,56 +215,35 @@
     </div>
 
     <script>
-        const API_BASE = 'https://suraj-backend-jq7k.onrender.com';
+        // 1. REPLACE THESE WITH YOUR SUPABASE CREDENTIALS
+        const SUPABASE_URL = 'https://YOUR_SUPABASE_PROJECT_ID.supabase.co';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        let token = localStorage.getItem('jwtToken');
-        if (token) showDashboard();
-
-        function authHeaders() {
-            return token ? { Authorization: `Bearer ${token}` } : {};
-        }
-
-        async function handleResponse(res) {
-            const data = await res.json().catch(() => ({}));
-            if (!res.ok) throw new Error(data.error || data.message || 'Request failed');
-            return data;
-        }
-
-        async function safeFetch(url, options = {}) {
-            const response = await fetch(url, options);
-            if (response.status === 401 || response.status === 403) {
-                logout();
-                throw new Error('Session expired. Please sign in again.');
-            }
-            return handleResponse(response);
-        }
+        // Check auth session state on start
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) showDashboard();
+        });
 
         document.getElementById('loginForm').onsubmit = async (e) => {
             e.preventDefault();
             const submitBtn = document.getElementById('loginSubmitBtn');
-            if (submitBtn.disabled) return;
             submitBtn.disabled = true;
             submitBtn.innerText = 'Signing In...';
 
-            try {
-                const res = await fetch(`${API_BASE}/api/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        username: document.getElementById('username').value.trim().toLowerCase(),
-                        password: document.getElementById('password').value
-                    })
-                });
-                const data = await handleResponse(res);
-                token = data.token;
-                localStorage.setItem('jwtToken', token);
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                alert(error.message);
+            } else {
                 showDashboard();
-            } catch (err) {
-                alert(err.message || 'Login failed');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerText = 'Sign In';
             }
+            submitBtn.disabled = false;
+            submitBtn.innerText = 'Sign In';
         };
 
         function showDashboard() {
@@ -267,9 +259,8 @@
             loadInquiries();
         }
 
-        function logout() {
-            localStorage.removeItem('jwtToken');
-            token = null;
+        async function logout() {
+            await supabase.auth.signOut();
             location.reload();
         }
 
@@ -282,416 +273,243 @@
 
         // --- BANNER VIDEO LOGIC ---
         async function loadBannerVideo() {
-            try {
-                const data = await safeFetch(`${API_BASE}/api/banner`);
-                if (data && data.url) {
-                    document.getElementById('bannerUrl').value = data.url;
-                }
-            } catch (err) {
-                console.error('Unable to load banner video:', err);
+            const { data } = await supabase.from('banner').select('*').single();
+            if (data && data.url) {
+                document.getElementById('bannerUrl').value = data.url;
             }
         }
 
         document.getElementById('bannerForm').onsubmit = async (e) => {
             e.preventDefault();
-            const submitBtn = document.getElementById('bannerSubmitBtn');
-            if (submitBtn.disabled) return;
-            submitBtn.disabled = true;
-            submitBtn.innerText = 'Updating...';
-
-            try {
-                await safeFetch(`${API_BASE}/api/admin/banner`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', ...authHeaders() },
-                    body: JSON.stringify({ url: document.getElementById('bannerUrl').value })
-                });
-                alert('Banner video updated successfully');
-            } catch (err) {
-                alert(err.message || 'Could not save banner video');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerText = 'Update Banner Video';
-            }
+            const url = document.getElementById('bannerUrl').value;
+            const { error } = await supabase.from('banner').upsert({ id: 1, url });
+            if (error) alert(error.message);
+            else alert('Banner video updated successfully');
         };
 
         // --- VIDEOS LOGIC ---
         async function loadVideos() {
-            try {
-                const data = await safeFetch(`${API_BASE}/api/videos`);
-                document.querySelector('#videosTable tbody').innerHTML = data.map(v => `
-                    <tr>
-                        <td>${v.title}</td>
-                        <td>${v.category}</td>
-                        <td><button onclick="deleteVideo(${v.id})" class="delete-btn">Delete</button></td>
-                    </tr>
-                `).join('');
-            } catch (err) {
-                console.error('Unable to load videos:', err);
-            }
+            const { data } = await supabase.from('videos').select('*');
+            document.querySelector('#videosTable tbody').innerHTML = (data || []).map(v => `
+                <tr>
+                    <td>${v.title || ''}</td>
+                    <td>${v.category || ''}</td>
+                    <td><button onclick="deleteVideo(${v.id})" class="delete-btn">Delete</button></td>
+                </tr>
+            `).join('');
         }
 
         document.getElementById('videoForm').onsubmit = async (e) => {
             e.preventDefault();
-            const submitBtn = document.getElementById('videoSubmitBtn');
-            if (submitBtn.disabled) return;
-            submitBtn.disabled = true;
-            submitBtn.innerText = 'Adding...';
+            const title = document.getElementById('vTitle').value;
+            const youtube_url = document.getElementById('vUrl').value;
+            const category = document.getElementById('vCat').value;
 
-            try {
-                await safeFetch(`${API_BASE}/api/admin/videos`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', ...authHeaders() },
-                    body: JSON.stringify({
-                        title: document.getElementById('vTitle').value,
-                        youtube_url: document.getElementById('vUrl').value,
-                        category: document.getElementById('vCat').value
-                    })
-                });
-                document.getElementById('vTitle').value = '';
-                document.getElementById('vUrl').value = '';
-                document.getElementById('vCat').value = '';
+            const { error } = await supabase.from('videos').insert([{ title, youtube_url, category }]);
+            if (error) alert(error.message);
+            else {
+                document.getElementById('videoForm').reset();
                 loadVideos();
-            } catch (err) {
-                alert(err.message || 'Could not save video');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerText = 'Add Video';
             }
         };
 
         async function deleteVideo(id) {
-            try {
-                await safeFetch(`${API_BASE}/api/admin/videos/${id}`, {
-                    method: 'DELETE',
-                    headers: authHeaders()
-                });
-                loadVideos();
-            } catch (err) {
-                alert(err.message || 'Could not delete video');
-            }
+            const { error } = await supabase.from('videos').delete().eq('id', id);
+            if (error) alert(error.message);
+            else loadVideos();
         }
 
         // --- PHOTOS LOGIC ---
         async function loadPhotos() {
-            try {
-                const data = await safeFetch(`${API_BASE}/api/photos`);
-                document.querySelector('#photosTable tbody').innerHTML = data.map(p => {
-                    let imagePath = p.image_url || p.image_path || p.filename || '';
-                    if (imagePath && !imagePath.startsWith('http')) {
-                        imagePath = `${API_BASE}/${imagePath.replace(/^\//, '')}`;
-                    }
-                    return `
-                        <tr>
-                            <td><img src="${imagePath}" class="img-thumb" alt="Preview" onerror="this.src='https://via.placeholder.com/60'"></td>
-                            <td>${p.caption || p.title || ''}</td>
-                            <td>${p.category || ''}</td>
-                            <td><button onclick="deletePhoto(${p.id})" class="delete-btn">Delete</button></td>
-                        </tr>
-                    `;
-                }).join('');
-            } catch (err) {
-                console.error('Unable to load photos:', err);
-            }
+            const { data } = await supabase.from('photos').select('*');
+            document.querySelector('#photosTable tbody').innerHTML = (data || []).map(p => `
+                <tr>
+                    <td><img src="${p.image_url}" class="img-thumb" alt="Preview"></td>
+                    <td>${p.caption || ''}</td>
+                    <td>${p.category || ''}</td>
+                    <td><button onclick="deletePhoto(${p.id})" class="delete-btn">Delete</button></td>
+                </tr>
+            `).join('');
         }
 
         document.getElementById('photoForm').onsubmit = async (e) => {
             e.preventDefault();
-            const submitBtn = document.getElementById('photoSubmitBtn');
-            if (submitBtn.disabled) return;
-            submitBtn.disabled = true;
-            submitBtn.innerText = 'Uploading...';
+            const file = document.getElementById('pImg').files[0];
+            const caption = document.getElementById('pCaption').value;
+            const category = document.getElementById('pCat').value;
+            const description = document.getElementById('pDesc').value;
 
-            try {
-                const formData = new FormData();
-                formData.append('caption', document.getElementById('pCaption').value);
-                formData.append('category', document.getElementById('pCat').value);
-                formData.append('description', document.getElementById('pDesc').value);
-                formData.append('image', document.getElementById('pImg').files[0]);
+            // 1. Upload Image to Supabase Bucket "uploads"
+            const fileName = `${Date.now()}_${file.name}`;
+            const { data: fileData, error: uploadErr } = await supabase.storage.from('uploads').upload(fileName, file);
+            if (uploadErr) return alert(uploadErr.message);
 
-                await safeFetch(`${API_BASE}/api/admin/photos`, {
-                    method: 'POST',
-                    headers: authHeaders(),
-                    body: formData
-                });
+            // 2. Get Public URL
+            const { data: urlData } = supabase.storage.from('uploads').getPublicUrl(fileName);
 
-                document.getElementById('pCaption').value = '';
-                document.getElementById('pCat').value = '';
-                document.getElementById('pDesc').value = '';
-                document.getElementById('pImg').value = '';
+            // 3. Insert record into database
+            const { error } = await supabase.from('photos').insert([{ caption, category, description, image_url: urlData.publicUrl }]);
+            if (error) alert(error.message);
+            else {
+                document.getElementById('photoForm').reset();
                 loadPhotos();
-            } catch (err) {
-                alert(err.message || 'Could not upload photo');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerText = 'Upload Photo';
             }
         };
 
         async function deletePhoto(id) {
-            try {
-                await safeFetch(`${API_BASE}/api/admin/photos/${id}`, {
-                    method: 'DELETE',
-                    headers: authHeaders()
-                });
-                loadPhotos();
-            } catch (err) {
-                alert(err.message || 'Could not delete photo');
-            }
+            const { error } = await supabase.from('photos').delete().eq('id', id);
+            if (error) alert(error.message);
+            else loadPhotos();
         }
 
         // --- TESTIMONIALS LOGIC ---
         async function loadTestimonials() {
-            try {
-                const data = await safeFetch(`${API_BASE}/api/testimonials`);
-                document.querySelector('#testimonialsTable tbody').innerHTML = data.map(t => `
-                    <tr>
-                        <td>${t.name}</td>
-                        <td>${t.role}</td>
-                        <td>${t.feedback}</td>
-                        <td><button onclick="deleteTestimonial(${t.id})" class="delete-btn">Delete</button></td>
-                    </tr>
-                `).join('');
-            } catch (err) {
-                console.error('Unable to load testimonials:', err);
-            }
+            const { data } = await supabase.from('testimonials').select('*');
+            document.querySelector('#testimonialsTable tbody').innerHTML = (data || []).map(t => `
+                <tr>
+                    <td>${t.name || ''}</td>
+                    <td>${t.role || ''}</td>
+                    <td>${t.feedback || ''}</td>
+                    <td><button onclick="deleteTestimonial(${t.id})" class="delete-btn">Delete</button></td>
+                </tr>
+            `).join('');
         }
 
         document.getElementById('testimonialForm').onsubmit = async (e) => {
             e.preventDefault();
-            const submitBtn = document.getElementById('testimonialSubmitBtn');
-            if (submitBtn.disabled) return;
-            submitBtn.disabled = true;
-            submitBtn.innerText = 'Adding...';
+            const name = document.getElementById('tName').value;
+            const role = document.getElementById('tRole').value;
+            const feedback = document.getElementById('tFeedback').value;
 
-            try {
-                await safeFetch(`${API_BASE}/api/admin/testimonials`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', ...authHeaders() },
-                    body: JSON.stringify({
-                        name: document.getElementById('tName').value,
-                        role: document.getElementById('tRole').value,
-                        feedback: document.getElementById('tFeedback').value
-                    })
-                });
-                document.getElementById('tName').value = '';
-                document.getElementById('tRole').value = '';
-                document.getElementById('tFeedback').value = '';
+            const { error } = await supabase.from('testimonials').insert([{ name, role, feedback }]);
+            if (error) alert(error.message);
+            else {
+                document.getElementById('testimonialForm').reset();
                 loadTestimonials();
-            } catch (err) {
-                alert(err.message || 'Could not save testimonial');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerText = 'Add Testimonial';
             }
         };
 
         async function deleteTestimonial(id) {
-            try {
-                await safeFetch(`${API_BASE}/api/admin/testimonials/${id}`, {
-                    method: 'DELETE',
-                    headers: authHeaders()
-                });
-                loadTestimonials();
-            } catch (err) {
-                alert(err.message || 'Could not delete testimonial');
-            }
+            const { error } = await supabase.from('testimonials').delete().eq('id', id);
+            if (error) alert(error.message);
+            else loadTestimonials();
         }
 
         // --- WORK EXPERIENCE LOGIC ---
         async function loadExperience() {
-            try {
-                const data = await safeFetch(`${API_BASE}/api/experiences`);
-                document.querySelector('#experienceTable tbody').innerHTML = data.map(e => `
-                    <tr>
-                        <td>${e.role}</td>
-                        <td>${e.company}</td>
-                        <td>${e.duration}</td>
-                        <td><button onclick="deleteExperience(${e.id})" class="delete-btn">Delete</button></td>
-                    </tr>
-                `).join('');
-            } catch (err) {
-                console.error('Unable to load experience:', err);
-            }
+            const { data } = await supabase.from('experiences').select('*');
+            document.querySelector('#experienceTable tbody').innerHTML = (data || []).map(e => `
+                <tr>
+                    <td>${e.role || ''}</td>
+                    <td>${e.company || ''}</td>
+                    <td>${e.duration || ''}</td>
+                    <td><button onclick="deleteExperience(${e.id})" class="delete-btn">Delete</button></td>
+                </tr>
+            `).join('');
         }
 
         document.getElementById('experienceForm').onsubmit = async (e) => {
             e.preventDefault();
-            const submitBtn = document.getElementById('experienceSubmitBtn');
-            if (submitBtn.disabled) return;
-            submitBtn.disabled = true;
-            submitBtn.innerText = 'Adding...';
+            const role = document.getElementById('expRole').value;
+            const company = document.getElementById('expCompany').value;
+            const duration = document.getElementById('expDuration').value;
+            const description = document.getElementById('expDesc').value;
 
-            try {
-                await safeFetch(`${API_BASE}/api/admin/experiences`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', ...authHeaders() },
-                    body: JSON.stringify({
-                        role: document.getElementById('expRole').value,
-                        company: document.getElementById('expCompany').value,
-                        duration: document.getElementById('expDuration').value,
-                        description: document.getElementById('expDesc').value
-                    })
-                });
-                document.getElementById('expRole').value = '';
-                document.getElementById('expCompany').value = '';
-                document.getElementById('expDuration').value = '';
-                document.getElementById('expDesc').value = '';
+            const { error } = await supabase.from('experiences').insert([{ role, company, duration, description }]);
+            if (error) alert(error.message);
+            else {
+                document.getElementById('experienceForm').reset();
                 loadExperience();
-            } catch (err) {
-                alert(err.message || 'Could not save experience');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerText = 'Add Experience';
             }
         };
 
         async function deleteExperience(id) {
-            try {
-                await safeFetch(`${API_BASE}/api/admin/experiences/${id}`, {
-                    method: 'DELETE',
-                    headers: authHeaders()
-                });
-                loadExperience();
-            } catch (err) {
-                alert(err.message || 'Could not delete experience');
-            }
+            const { error } = await supabase.from('experiences').delete().eq('id', id);
+            if (error) alert(error.message);
+            else loadExperience();
         }
 
         // --- TRUSTED BRANDS LOGIC ---
         async function loadBrands() {
-            try {
-                const data = await safeFetch(`${API_BASE}/api/brands`);
-                document.querySelector('#brandsTable tbody').innerHTML = data.map(b => {
-                    let imagePath = b.image_url || b.logo || '';
-                    if (imagePath && !imagePath.startsWith('http')) {
-                        imagePath = `${API_BASE}/${imagePath.replace(/^\//, '')}`;
-                    }
-                    return `
-                        <tr>
-                            <td><img src="${imagePath}" class="img-thumb" alt="Brand Logo"></td>
-                            <td>${b.name}</td>
-                            <td><button onclick="deleteBrand(${b.id})" class="delete-btn">Delete</button></td>
-                        </tr>
-                    `;
-                }).join('');
-            } catch (err) {
-                console.error('Unable to load brands:', err);
-            }
+            const { data } = await supabase.from('brands').select('*');
+            document.querySelector('#brandsTable tbody').innerHTML = (data || []).map(b => `
+                <tr>
+                    <td><img src="${b.image_url}" class="img-thumb" alt="Brand Logo"></td>
+                    <td>${b.name || ''}</td>
+                    <td><button onclick="deleteBrand(${b.id})" class="delete-btn">Delete</button></td>
+                </tr>
+            `).join('');
         }
 
         document.getElementById('brandForm').onsubmit = async (e) => {
             e.preventDefault();
-            const submitBtn = document.getElementById('brandSubmitBtn');
-            if (submitBtn.disabled) return;
-            submitBtn.disabled = true;
-            submitBtn.innerText = 'Uploading...';
+            const file = document.getElementById('bLogo').files[0];
+            const name = document.getElementById('bName').value;
 
-            try {
-                const formData = new FormData();
-                formData.append('name', document.getElementById('bName').value);
-                formData.append('logo', document.getElementById('bLogo').files[0]);
+            const fileName = `brands/${Date.now()}_${file.name}`;
+            const { error: uploadErr } = await supabase.storage.from('uploads').upload(fileName, file);
+            if (uploadErr) return alert(uploadErr.message);
 
-                await safeFetch(`${API_BASE}/api/admin/brands`, {
-                    method: 'POST',
-                    headers: authHeaders(),
-                    body: formData
-                });
-                document.getElementById('bName').value = '';
-                document.getElementById('bLogo').value = '';
+            const { data: urlData } = supabase.storage.from('uploads').getPublicUrl(fileName);
+
+            const { error } = await supabase.from('brands').insert([{ name, image_url: urlData.publicUrl }]);
+            if (error) alert(error.message);
+            else {
+                document.getElementById('brandForm').reset();
                 loadBrands();
-            } catch (err) {
-                alert(err.message || 'Could not add brand');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerText = 'Add Brand Logo';
             }
         };
 
         async function deleteBrand(id) {
-            try {
-                await safeFetch(`${API_BASE}/api/admin/brands/${id}`, {
-                    method: 'DELETE',
-                    headers: authHeaders()
-                });
-                loadBrands();
-            } catch (err) {
-                alert(err.message || 'Could not delete brand');
-            }
+            const { error } = await supabase.from('brands').delete().eq('id', id);
+            if (error) alert(error.message);
+            else loadBrands();
         }
 
         // --- GEARS LOGIC ---
         async function loadGears() {
-            try {
-                const data = await safeFetch(`${API_BASE}/api/gears`);
-                document.querySelector('#gearsTable tbody').innerHTML = data.map(g => `
-                    <tr>
-                        <td>${g.name}</td>
-                        <td>${g.category}</td>
-                        <td>${g.specs || ''}</td>
-                        <td><button onclick="deleteGear(${g.id})" class="delete-btn">Delete</button></td>
-                    </tr>
-                `).join('');
-            } catch (err) {
-                console.error('Unable to load gears:', err);
-            }
+            const { data } = await supabase.from('gears').select('*');
+            document.querySelector('#gearsTable tbody').innerHTML = (data || []).map(g => `
+                <tr>
+                    <td>${g.name || ''}</td>
+                    <td>${g.category || ''}</td>
+                    <td>${g.specs || ''}</td>
+                    <td><button onclick="deleteGear(${g.id})" class="delete-btn">Delete</button></td>
+                </tr>
+            `).join('');
         }
 
         document.getElementById('gearForm').onsubmit = async (e) => {
             e.preventDefault();
-            const submitBtn = document.getElementById('gearSubmitBtn');
-            if (submitBtn.disabled) return;
-            submitBtn.disabled = true;
-            submitBtn.innerText = 'Adding...';
+            const name = document.getElementById('gName').value;
+            const category = document.getElementById('gCat').value;
+            const specs = document.getElementById('gSpecs').value;
 
-            try {
-                await safeFetch(`${API_BASE}/api/admin/gears`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', ...authHeaders() },
-                    body: JSON.stringify({
-                        name: document.getElementById('gName').value,
-                        category: document.getElementById('gCat').value,
-                        specs: document.getElementById('gSpecs').value
-                    })
-                });
-                document.getElementById('gName').value = '';
-                document.getElementById('gCat').value = '';
-                document.getElementById('gSpecs').value = '';
+            const { error } = await supabase.from('gears').insert([{ name, category, specs }]);
+            if (error) alert(error.message);
+            else {
+                document.getElementById('gearForm').reset();
                 loadGears();
-            } catch (err) {
-                alert(err.message || 'Could not save gear');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerText = 'Add Gear';
             }
         };
 
         async function deleteGear(id) {
-            try {
-                await safeFetch(`${API_BASE}/api/admin/gears/${id}`, {
-                    method: 'DELETE',
-                    headers: authHeaders()
-                });
-                loadGears();
-            } catch (err) {
-                alert(err.message || 'Could not delete gear');
-            }
+            const { error } = await supabase.from('gears').delete().eq('id', id);
+            if (error) alert(error.message);
+            else loadGears();
         }
 
         // --- INQUIRIES LOGIC ---
         async function loadInquiries() {
-            try {
-                const data = await safeFetch(`${API_BASE}/api/admin/inquiries`, { headers: authHeaders() });
-                document.querySelector('#inquiriesTable tbody').innerHTML = data.map(i => `
-                    <tr>
-                        <td>${i.name}</td>
-                        <td>${i.email}</td>
-                        <td>${i.phone}</td>
-                        <td>${i.message}</td>
-                    </tr>
-                `).join('');
-            } catch (err) {
-                console.error('Unable to load inquiries:', err);
-            }
+            const { data } = await supabase.from('inquiries').select('*');
+            document.querySelector('#inquiriesTable tbody').innerHTML = (data || []).map(i => `
+                <tr>
+                    <td>${i.name || ''}</td>
+                    <td>${i.email || ''}</td>
+                    <td>${i.phone || ''}</td>
+                    <td>${i.message || ''}</td>
+                </tr>
+            `).join('');
         }
     </script>
 </body>
