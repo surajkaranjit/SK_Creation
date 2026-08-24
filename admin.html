@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SURAJ CREATION | Admin Panel</title>
     
+    <!-- Include Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <script>
     // 1. YOUR SUPABASE CREDENTIALS
     const SUPABASE_URL = 'https://biymshexpmeqnkkqitz.supabase.co';
@@ -12,8 +15,19 @@
     
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // ... rest of your code remains below
-</script>
+    // Helper function to auto-format YouTube links & Shorts to Embed URLs
+    function formatYouTubeUrl(url) {
+        if (!url) return '';
+        // Extract video ID from Shorts, watch links, or share links
+        const regExp = /(?:youtube\.com\/(?:shorts\/|watch\?v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+        const match = url.match(regExp);
+
+        if (match && match[1]) {
+            return `https://www.youtube.com/embed/${match[1]}`;
+        }
+        return url.trim();
+    }
+    </script>
     
     <style>
         :root {
@@ -51,8 +65,6 @@
         .img-thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; }
         .delete-btn { color: #ff4d4d; background: none; border: none; cursor: pointer; font-weight: 600; }
     </style>
-    <!-- Include Supabase JS SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -92,8 +104,8 @@
                     <h2>Manage Banner Video</h2>
                     <div class="card" style="margin-top: 20px;">
                         <form id="bannerForm">
-                            <label>YouTube Embed URL or Direct Video Link</label>
-                            <input type="text" id="bannerUrl" placeholder="https://www.youtube.com/embed/..." required>
+                            <label>YouTube Video URL or Shorts Link</label>
+                            <input type="text" id="bannerUrl" placeholder="https://www.youtube.com/watch?v=... or Shorts Link" required>
                             <button type="submit" id="bannerSubmitBtn" class="btn">Update Banner Video</button>
                         </form>
                     </div>
@@ -105,7 +117,7 @@
                     <div class="card" style="margin-top: 20px;">
                         <form id="videoForm">
                             <input type="text" id="vTitle" placeholder="Title (e.g. Color Grade Pass)" required>
-                            <input type="text" id="vUrl" placeholder="YouTube Embed URL" required>
+                            <input type="text" id="vUrl" placeholder="YouTube Video URL or Shorts Link" required>
                             <input type="text" id="vCat" placeholder="Category" required>
                             <button type="submit" id="videoSubmitBtn" class="btn">Add Video</button>
                         </form>
@@ -215,12 +227,6 @@
     </div>
 
     <script>
-        // 1. REPLACE THESE WITH YOUR SUPABASE CREDENTIALS
-        const SUPABASE_URL = 'https://YOUR_SUPABASE_PROJECT_ID.supabase.co';
-        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-        
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
         // Check auth session state on start
         supabase.auth.getSession().then(({ data: { session } }) => {
             if (session) showDashboard();
@@ -281,7 +287,9 @@
 
         document.getElementById('bannerForm').onsubmit = async (e) => {
             e.preventDefault();
-            const url = document.getElementById('bannerUrl').value;
+            const rawUrl = document.getElementById('bannerUrl').value;
+            const url = formatYouTubeUrl(rawUrl);
+
             const { error } = await supabase.from('banner').upsert({ id: 1, url });
             if (error) alert(error.message);
             else alert('Banner video updated successfully');
@@ -302,7 +310,8 @@
         document.getElementById('videoForm').onsubmit = async (e) => {
             e.preventDefault();
             const title = document.getElementById('vTitle').value;
-            const youtube_url = document.getElementById('vUrl').value;
+            const rawUrl = document.getElementById('vUrl').value;
+            const youtube_url = formatYouTubeUrl(rawUrl);
             const category = document.getElementById('vCat').value;
 
             const { error } = await supabase.from('videos').insert([{ title, youtube_url, category }]);
