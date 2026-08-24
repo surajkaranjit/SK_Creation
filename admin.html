@@ -13,12 +13,12 @@
     const SUPABASE_URL = 'https://biymshexpmeqnkkqitz.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpeW1zaGV4cG1lcXdua2txaXR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYyNDU5NjQsImV4cCI6MjEwMTgyMTk2NH0.0-GBJ9DMvWoIP2E5EhCm_RWIQyQPDIjerknclhtU3U8';
     
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Initialized as supabaseClient to prevent variable redeclaration conflicts
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // Helper function to auto-format YouTube links & Shorts to Embed URLs
     function formatYouTubeUrl(url) {
         if (!url) return '';
-        // Extract video ID from Shorts, watch links, or share links
         const regExp = /(?:youtube\.com\/(?:shorts\/|watch\?v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
         const match = url.match(regExp);
 
@@ -228,7 +228,7 @@
 
     <script>
         // Check auth session state on start
-        supabase.auth.getSession().then(({ data: { session } }) => {
+        supabaseClient.auth.getSession().then(({ data: { session } }) => {
             if (session) showDashboard();
         });
 
@@ -241,7 +241,7 @@
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
 
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
             if (error) {
                 alert(error.message);
@@ -266,7 +266,7 @@
         }
 
         async function logout() {
-            await supabase.auth.signOut();
+            await supabaseClient.auth.signOut();
             location.reload();
         }
 
@@ -279,7 +279,7 @@
 
         // --- BANNER VIDEO LOGIC ---
         async function loadBannerVideo() {
-            const { data } = await supabase.from('banner').select('*').single();
+            const { data } = await supabaseClient.from('banner').select('*').single();
             if (data && data.url) {
                 document.getElementById('bannerUrl').value = data.url;
             }
@@ -290,14 +290,14 @@
             const rawUrl = document.getElementById('bannerUrl').value;
             const url = formatYouTubeUrl(rawUrl);
 
-            const { error } = await supabase.from('banner').upsert({ id: 1, url });
+            const { error } = await supabaseClient.from('banner').upsert({ id: 1, url });
             if (error) alert(error.message);
             else alert('Banner video updated successfully');
         };
 
         // --- VIDEOS LOGIC ---
         async function loadVideos() {
-            const { data } = await supabase.from('videos').select('*');
+            const { data } = await supabaseClient.from('videos').select('*');
             document.querySelector('#videosTable tbody').innerHTML = (data || []).map(v => `
                 <tr>
                     <td>${v.title || ''}</td>
@@ -314,7 +314,7 @@
             const youtube_url = formatYouTubeUrl(rawUrl);
             const category = document.getElementById('vCat').value;
 
-            const { error } = await supabase.from('videos').insert([{ title, youtube_url, category }]);
+            const { error } = await supabaseClient.from('videos').insert([{ title, youtube_url, category }]);
             if (error) alert(error.message);
             else {
                 document.getElementById('videoForm').reset();
@@ -323,14 +323,14 @@
         };
 
         async function deleteVideo(id) {
-            const { error } = await supabase.from('videos').delete().eq('id', id);
+            const { error } = await supabaseClient.from('videos').delete().eq('id', id);
             if (error) alert(error.message);
             else loadVideos();
         }
 
         // --- PHOTOS LOGIC ---
         async function loadPhotos() {
-            const { data } = await supabase.from('photos').select('*');
+            const { data } = await supabaseClient.from('photos').select('*');
             document.querySelector('#photosTable tbody').innerHTML = (data || []).map(p => `
                 <tr>
                     <td><img src="${p.image_url}" class="img-thumb" alt="Preview"></td>
@@ -350,14 +350,14 @@
 
             // 1. Upload Image to Supabase Bucket "uploads"
             const fileName = `${Date.now()}_${file.name}`;
-            const { data: fileData, error: uploadErr } = await supabase.storage.from('uploads').upload(fileName, file);
+            const { data: fileData, error: uploadErr } = await supabaseClient.storage.from('uploads').upload(fileName, file);
             if (uploadErr) return alert(uploadErr.message);
 
             // 2. Get Public URL
-            const { data: urlData } = supabase.storage.from('uploads').getPublicUrl(fileName);
+            const { data: urlData } = supabaseClient.storage.from('uploads').getPublicUrl(fileName);
 
             // 3. Insert record into database
-            const { error } = await supabase.from('photos').insert([{ caption, category, description, image_url: urlData.publicUrl }]);
+            const { error } = await supabaseClient.from('photos').insert([{ caption, category, description, image_url: urlData.publicUrl }]);
             if (error) alert(error.message);
             else {
                 document.getElementById('photoForm').reset();
@@ -366,14 +366,14 @@
         };
 
         async function deletePhoto(id) {
-            const { error } = await supabase.from('photos').delete().eq('id', id);
+            const { error } = await supabaseClient.from('photos').delete().eq('id', id);
             if (error) alert(error.message);
             else loadPhotos();
         }
 
         // --- TESTIMONIALS LOGIC ---
         async function loadTestimonials() {
-            const { data } = await supabase.from('testimonials').select('*');
+            const { data } = await supabaseClient.from('testimonials').select('*');
             document.querySelector('#testimonialsTable tbody').innerHTML = (data || []).map(t => `
                 <tr>
                     <td>${t.name || ''}</td>
@@ -390,7 +390,7 @@
             const role = document.getElementById('tRole').value;
             const feedback = document.getElementById('tFeedback').value;
 
-            const { error } = await supabase.from('testimonials').insert([{ name, role, feedback }]);
+            const { error } = await supabaseClient.from('testimonials').insert([{ name, role, feedback }]);
             if (error) alert(error.message);
             else {
                 document.getElementById('testimonialForm').reset();
@@ -399,14 +399,14 @@
         };
 
         async function deleteTestimonial(id) {
-            const { error } = await supabase.from('testimonials').delete().eq('id', id);
+            const { error } = await supabaseClient.from('testimonials').delete().eq('id', id);
             if (error) alert(error.message);
             else loadTestimonials();
         }
 
         // --- WORK EXPERIENCE LOGIC ---
         async function loadExperience() {
-            const { data } = await supabase.from('experiences').select('*');
+            const { data } = await supabaseClient.from('experiences').select('*');
             document.querySelector('#experienceTable tbody').innerHTML = (data || []).map(e => `
                 <tr>
                     <td>${e.role || ''}</td>
@@ -424,7 +424,7 @@
             const duration = document.getElementById('expDuration').value;
             const description = document.getElementById('expDesc').value;
 
-            const { error } = await supabase.from('experiences').insert([{ role, company, duration, description }]);
+            const { error } = await supabaseClient.from('experiences').insert([{ role, company, duration, description }]);
             if (error) alert(error.message);
             else {
                 document.getElementById('experienceForm').reset();
@@ -433,14 +433,14 @@
         };
 
         async function deleteExperience(id) {
-            const { error } = await supabase.from('experiences').delete().eq('id', id);
+            const { error } = await supabaseClient.from('experiences').delete().eq('id', id);
             if (error) alert(error.message);
             else loadExperience();
         }
 
         // --- TRUSTED BRANDS LOGIC ---
         async function loadBrands() {
-            const { data } = await supabase.from('brands').select('*');
+            const { data } = await supabaseClient.from('brands').select('*');
             document.querySelector('#brandsTable tbody').innerHTML = (data || []).map(b => `
                 <tr>
                     <td><img src="${b.image_url}" class="img-thumb" alt="Brand Logo"></td>
@@ -456,12 +456,12 @@
             const name = document.getElementById('bName').value;
 
             const fileName = `brands/${Date.now()}_${file.name}`;
-            const { error: uploadErr } = await supabase.storage.from('uploads').upload(fileName, file);
+            const { error: uploadErr } = await supabaseClient.storage.from('uploads').upload(fileName, file);
             if (uploadErr) return alert(uploadErr.message);
 
-            const { data: urlData } = supabase.storage.from('uploads').getPublicUrl(fileName);
+            const { data: urlData } = supabaseClient.storage.from('uploads').getPublicUrl(fileName);
 
-            const { error } = await supabase.from('brands').insert([{ name, image_url: urlData.publicUrl }]);
+            const { error } = await supabaseClient.from('brands').insert([{ name, image_url: urlData.publicUrl }]);
             if (error) alert(error.message);
             else {
                 document.getElementById('brandForm').reset();
@@ -470,14 +470,14 @@
         };
 
         async function deleteBrand(id) {
-            const { error } = await supabase.from('brands').delete().eq('id', id);
+            const { error } = await supabaseClient.from('brands').delete().eq('id', id);
             if (error) alert(error.message);
             else loadBrands();
         }
 
         // --- GEARS LOGIC ---
         async function loadGears() {
-            const { data } = await supabase.from('gears').select('*');
+            const { data } = await supabaseClient.from('gears').select('*');
             document.querySelector('#gearsTable tbody').innerHTML = (data || []).map(g => `
                 <tr>
                     <td>${g.name || ''}</td>
@@ -494,7 +494,7 @@
             const category = document.getElementById('gCat').value;
             const specs = document.getElementById('gSpecs').value;
 
-            const { error } = await supabase.from('gears').insert([{ name, category, specs }]);
+            const { error } = await supabaseClient.from('gears').insert([{ name, category, specs }]);
             if (error) alert(error.message);
             else {
                 document.getElementById('gearForm').reset();
@@ -503,14 +503,14 @@
         };
 
         async function deleteGear(id) {
-            const { error } = await supabase.from('gears').delete().eq('id', id);
+            const { error } = await supabaseClient.from('gears').delete().eq('id', id);
             if (error) alert(error.message);
             else loadGears();
         }
 
         // --- INQUIRIES LOGIC ---
         async function loadInquiries() {
-            const { data } = await supabase.from('inquiries').select('*');
+            const { data } = await supabaseClient.from('inquiries').select('*');
             document.querySelector('#inquiriesTable tbody').innerHTML = (data || []).map(i => `
                 <tr>
                     <td>${i.name || ''}</td>
