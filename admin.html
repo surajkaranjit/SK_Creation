@@ -8,26 +8,27 @@
     <!-- Include Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <script>
-// 1. YOUR SUPABASE CREDENTIALS
-const SUPABASE_URL = 'https://biymshexpmeqnkkqitz.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpeW1zaGV4cG1lcXdua2txaXR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYyNDU5NjQsImV4cCI6MjEwMTgyMTk2NH0.0-GBJ9DMvWoIP2E5EhCm_RWIQyQPDIjerknclhtU3U8';
+    <script>
+    // 1. YOUR SUPABASE CREDENTIALS
+    // IMPORTANT: Make sure this project URL matches your Supabase Dashboard -> Settings -> API Keys Exactly!
+    const SUPABASE_URL = 'https://biymshexpmeqnkkqitz.supabase.co'; 
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpeW1zaGV4cG1lcXdua2txaXR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYyNDU5NjQsImV4cCI6MjEwMTgyMTk2NH0.0-GBJ9DMvWoIP2E5EhCm_RWIQyQPDIjerknclhtU3U8';
 
-// Initialized as supabaseClient to prevent variable redeclaration conflicts
-var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Initialized as supabaseClient to prevent variable redeclaration conflicts
+    var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Helper function to auto-format YouTube links & Shorts to Embed URLs
-function formatYouTubeUrl(url) {
-    if (!url) return '';
-    const regExp = /(?:youtube\.com\/(?:shorts\/|watch\?v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-    const match = url.match(regExp);
+    // Helper function to auto-format YouTube links & Shorts to Embed URLs
+    function formatYouTubeUrl(url) {
+        if (!url) return '';
+        const regExp = /(?:youtube\.com\/(?:shorts\/|watch\?v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+        const match = url.match(regExp);
 
-    if (match && match[1]) {
-        return `https://www.youtube.com/embed/${match[1]}`;
+        if (match && match[1]) {
+            return `https://www.youtube.com/embed/${match[1]}`;
+        }
+        return url.trim();
     }
-    return url.trim();
-}
-</script>
+    </script>
     
     <style>
         :root {
