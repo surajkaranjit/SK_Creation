@@ -5,24 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SURAJ CREATION | Admin Panel</title>
     
-    <!-- Include Supabase JS SDK -->
+    <!-- Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
-    // 1. YOUR SUPABASE CREDENTIALS
-    // IMPORTANT: Make sure this project URL matches your Supabase Dashboard -> Settings -> API Keys Exactly!
+    // 1. SUPABASE CREDENTIALS
     const SUPABASE_URL = 'https://biymshexpmeqwnkkqitz.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpeW1zaGV4cG1lcXdua2txaXR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYyNDU5NjQsImV4cCI6MjEwMTgyMTk2NH0.0-GBJ9DMvWoIP2E5EhCm_RWIQyQPDIjerknclhtU3U8';
 
-    // Initialized as supabaseClient to prevent variable redeclaration conflicts
     var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Helper function to auto-format YouTube links & Shorts to Embed URLs
+    // XSS Sanitizer to protect against malicious injections
+    function escapeHTML(str) {
+        if (!str) return '';
+        return String(str).replace(/[&<>"']/g, function(m) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+        });
+    }
+
+    // Formats YouTube URLs, Shorts, and Embed links to embeddable format
     function formatYouTubeUrl(url) {
         if (!url) return '';
-        const regExp = /(?:youtube\.com\/(?:shorts\/|watch\?v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+        const regExp = /(?:youtube\.com\/(?:shorts\/|watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
         const match = url.match(regExp);
-
         if (match && match[1]) {
             return `https://www.youtube.com/embed/${match[1]}`;
         }
@@ -228,7 +233,7 @@
     </div>
 
     <script>
-        // Check auth session state on start
+        // Check session state on load
         supabaseClient.auth.getSession().then(({ data: { session } }) => {
             if (session) showDashboard();
         });
@@ -276,6 +281,15 @@
             document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             el.classList.add('active');
+
+            // Refresh tab data when clicked
+            if (id === 'inquiriesTab') loadInquiries();
+            if (id === 'videosTab') loadVideos();
+            if (id === 'photosTab') loadPhotos();
+            if (id === 'brandsTab') loadBrands();
+            if (id === 'testimonialsTab') loadTestimonials();
+            if (id === 'experienceTab') loadExperience();
+            if (id === 'gearsTab') loadGears();
         }
 
         // --- BANNER VIDEO LOGIC ---
@@ -288,12 +302,17 @@
 
         document.getElementById('bannerForm').onsubmit = async (e) => {
             e.preventDefault();
+            const submitBtn = document.getElementById('bannerSubmitBtn');
+            submitBtn.disabled = true;
+            
             const rawUrl = document.getElementById('bannerUrl').value;
             const url = formatYouTubeUrl(rawUrl);
 
             const { error } = await supabaseClient.from('banner').upsert({ id: 1, url });
             if (error) alert(error.message);
             else alert('Banner video updated successfully');
+            
+            submitBtn.disabled = false;
         };
 
         // --- VIDEOS LOGIC ---
@@ -301,8 +320,8 @@
             const { data } = await supabaseClient.from('videos').select('*');
             document.querySelector('#videosTable tbody').innerHTML = (data || []).map(v => `
                 <tr>
-                    <td>${v.title || ''}</td>
-                    <td>${v.category || ''}</td>
+                    <td>${escapeHTML(v.title)}</td>
+                    <td>${escapeHTML(v.category)}</td>
                     <td><button onclick="deleteVideo(${v.id})" class="delete-btn">Delete</button></td>
                 </tr>
             `).join('');
@@ -310,6 +329,9 @@
 
         document.getElementById('videoForm').onsubmit = async (e) => {
             e.preventDefault();
+            const submitBtn = document.getElementById('videoSubmitBtn');
+            submitBtn.disabled = true;
+
             const title = document.getElementById('vTitle').value;
             const rawUrl = document.getElementById('vUrl').value;
             const youtube_url = formatYouTubeUrl(rawUrl);
@@ -321,6 +343,7 @@
                 document.getElementById('videoForm').reset();
                 loadVideos();
             }
+            submitBtn.disabled = false;
         };
 
         async function deleteVideo(id) {
@@ -334,9 +357,9 @@
             const { data } = await supabaseClient.from('photos').select('*');
             document.querySelector('#photosTable tbody').innerHTML = (data || []).map(p => `
                 <tr>
-                    <td><img src="${p.image_url}" class="img-thumb" alt="Preview"></td>
-                    <td>${p.caption || ''}</td>
-                    <td>${p.category || ''}</td>
+                    <td><img src="${escapeHTML(p.image_url)}" class="img-thumb" alt="Preview"></td>
+                    <td>${escapeHTML(p.caption)}</td>
+                    <td>${escapeHTML(p.category)}</td>
                     <td><button onclick="deletePhoto(${p.id})" class="delete-btn">Delete</button></td>
                 </tr>
             `).join('');
@@ -344,26 +367,39 @@
 
         document.getElementById('photoForm').onsubmit = async (e) => {
             e.preventDefault();
+            const submitBtn = document.getElementById('photoSubmitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Uploading...';
+
             const file = document.getElementById('pImg').files[0];
             const caption = document.getElementById('pCaption').value;
             const category = document.getElementById('pCat').value;
             const description = document.getElementById('pDesc').value;
 
-            // 1. Upload Image to Supabase Bucket "uploads"
-            const fileName = `${Date.now()}_${file.name}`;
-            const { data: fileData, error: uploadErr } = await supabaseClient.storage.from('uploads').upload(fileName, file);
-            if (uploadErr) return alert(uploadErr.message);
+            // 1. Upload to Supabase Bucket "uploads"
+            const fileName = `photos/${Date.now()}_${file.name}`;
+            const { error: uploadErr } = await supabaseClient.storage.from('uploads').upload(fileName, file);
+            
+            if (uploadErr) {
+                alert('Storage Upload Error: ' + uploadErr.message);
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Upload Photo';
+                return;
+            }
 
             // 2. Get Public URL
             const { data: urlData } = supabaseClient.storage.from('uploads').getPublicUrl(fileName);
 
-            // 3. Insert record into database
+            // 3. Save Record in Database
             const { error } = await supabaseClient.from('photos').insert([{ caption, category, description, image_url: urlData.publicUrl }]);
             if (error) alert(error.message);
             else {
                 document.getElementById('photoForm').reset();
                 loadPhotos();
             }
+
+            submitBtn.disabled = false;
+            submitBtn.innerText = 'Upload Photo';
         };
 
         async function deletePhoto(id) {
@@ -377,9 +413,9 @@
             const { data } = await supabaseClient.from('testimonials').select('*');
             document.querySelector('#testimonialsTable tbody').innerHTML = (data || []).map(t => `
                 <tr>
-                    <td>${t.name || ''}</td>
-                    <td>${t.role || ''}</td>
-                    <td>${t.feedback || ''}</td>
+                    <td>${escapeHTML(t.name)}</td>
+                    <td>${escapeHTML(t.role)}</td>
+                    <td>${escapeHTML(t.feedback)}</td>
                     <td><button onclick="deleteTestimonial(${t.id})" class="delete-btn">Delete</button></td>
                 </tr>
             `).join('');
@@ -387,6 +423,9 @@
 
         document.getElementById('testimonialForm').onsubmit = async (e) => {
             e.preventDefault();
+            const submitBtn = document.getElementById('testimonialSubmitBtn');
+            submitBtn.disabled = true;
+
             const name = document.getElementById('tName').value;
             const role = document.getElementById('tRole').value;
             const feedback = document.getElementById('tFeedback').value;
@@ -397,6 +436,7 @@
                 document.getElementById('testimonialForm').reset();
                 loadTestimonials();
             }
+            submitBtn.disabled = false;
         };
 
         async function deleteTestimonial(id) {
@@ -410,9 +450,9 @@
             const { data } = await supabaseClient.from('experiences').select('*');
             document.querySelector('#experienceTable tbody').innerHTML = (data || []).map(e => `
                 <tr>
-                    <td>${e.role || ''}</td>
-                    <td>${e.company || ''}</td>
-                    <td>${e.duration || ''}</td>
+                    <td>${escapeHTML(e.role)}</td>
+                    <td>${escapeHTML(e.company)}</td>
+                    <td>${escapeHTML(e.duration)}</td>
                     <td><button onclick="deleteExperience(${e.id})" class="delete-btn">Delete</button></td>
                 </tr>
             `).join('');
@@ -420,6 +460,9 @@
 
         document.getElementById('experienceForm').onsubmit = async (e) => {
             e.preventDefault();
+            const submitBtn = document.getElementById('experienceSubmitBtn');
+            submitBtn.disabled = true;
+
             const role = document.getElementById('expRole').value;
             const company = document.getElementById('expCompany').value;
             const duration = document.getElementById('expDuration').value;
@@ -431,6 +474,7 @@
                 document.getElementById('experienceForm').reset();
                 loadExperience();
             }
+            submitBtn.disabled = false;
         };
 
         async function deleteExperience(id) {
@@ -444,8 +488,8 @@
             const { data } = await supabaseClient.from('brands').select('*');
             document.querySelector('#brandsTable tbody').innerHTML = (data || []).map(b => `
                 <tr>
-                    <td><img src="${b.image_url}" class="img-thumb" alt="Brand Logo"></td>
-                    <td>${b.name || ''}</td>
+                    <td><img src="${escapeHTML(b.image_url)}" class="img-thumb" alt="Brand Logo"></td>
+                    <td>${escapeHTML(b.name)}</td>
                     <td><button onclick="deleteBrand(${b.id})" class="delete-btn">Delete</button></td>
                 </tr>
             `).join('');
@@ -453,12 +497,22 @@
 
         document.getElementById('brandForm').onsubmit = async (e) => {
             e.preventDefault();
+            const submitBtn = document.getElementById('brandSubmitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Uploading...';
+
             const file = document.getElementById('bLogo').files[0];
             const name = document.getElementById('bName').value;
 
             const fileName = `brands/${Date.now()}_${file.name}`;
             const { error: uploadErr } = await supabaseClient.storage.from('uploads').upload(fileName, file);
-            if (uploadErr) return alert(uploadErr.message);
+            
+            if (uploadErr) {
+                alert('Storage Upload Error: ' + uploadErr.message);
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Add Brand Logo';
+                return;
+            }
 
             const { data: urlData } = supabaseClient.storage.from('uploads').getPublicUrl(fileName);
 
@@ -468,6 +522,9 @@
                 document.getElementById('brandForm').reset();
                 loadBrands();
             }
+
+            submitBtn.disabled = false;
+            submitBtn.innerText = 'Add Brand Logo';
         };
 
         async function deleteBrand(id) {
@@ -481,9 +538,9 @@
             const { data } = await supabaseClient.from('gears').select('*');
             document.querySelector('#gearsTable tbody').innerHTML = (data || []).map(g => `
                 <tr>
-                    <td>${g.name || ''}</td>
-                    <td>${g.category || ''}</td>
-                    <td>${g.specs || ''}</td>
+                    <td>${escapeHTML(g.name)}</td>
+                    <td>${escapeHTML(g.category)}</td>
+                    <td>${escapeHTML(g.specs)}</td>
                     <td><button onclick="deleteGear(${g.id})" class="delete-btn">Delete</button></td>
                 </tr>
             `).join('');
@@ -491,6 +548,9 @@
 
         document.getElementById('gearForm').onsubmit = async (e) => {
             e.preventDefault();
+            const submitBtn = document.getElementById('gearSubmitBtn');
+            submitBtn.disabled = true;
+
             const name = document.getElementById('gName').value;
             const category = document.getElementById('gCat').value;
             const specs = document.getElementById('gSpecs').value;
@@ -501,6 +561,7 @@
                 document.getElementById('gearForm').reset();
                 loadGears();
             }
+            submitBtn.disabled = false;
         };
 
         async function deleteGear(id) {
@@ -514,10 +575,10 @@
             const { data } = await supabaseClient.from('inquiries').select('*');
             document.querySelector('#inquiriesTable tbody').innerHTML = (data || []).map(i => `
                 <tr>
-                    <td>${i.name || ''}</td>
-                    <td>${i.email || ''}</td>
-                    <td>${i.phone || ''}</td>
-                    <td>${i.message || ''}</td>
+                    <td>${escapeHTML(i.name)}</td>
+                    <td>${escapeHTML(i.email)}</td>
+                    <td>${escapeHTML(i.phone)}</td>
+                    <td>${escapeHTML(i.message)}</td>
                 </tr>
             `).join('');
         }
